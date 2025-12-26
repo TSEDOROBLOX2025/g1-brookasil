@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>G1 - Brookasil</title>
+    <style>
+        /* CSS ESTILO G1 */
+        body { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; margin: 0; background-color: #f2f2f2; color: #333; }
+        
+        /* Cabeçalho */
+        header { background-color: #C4170C; color: white; padding: 10px 20px; display: flex; align-items: center; position: sticky; top: 0; z-index: 1000; }
+        .menu-icon { font-size: 24px; cursor: pointer; margin-right: 20px; }
+        .logo { font-weight: bold; font-size: 28px; letter-spacing: -1px; }
+        .region { margin-left: 10px; font-weight: bold; border-left: 1px solid rgba(255,255,255,0.3); padding-left: 10px; font-size: 14px; }
+
+        /* Menu Lateral */
+        nav { height: 100%; width: 0; position: fixed; z-index: 2000; top: 0; left: 0; background-color: #fff; overflow-x: hidden; transition: 0.3s; padding-top: 60px; box-shadow: 2px 0 5px rgba(0,0,0,0.1); }
+        nav a { padding: 15px 25px; text-decoration: none; font-size: 18px; color: #C4170C; display: block; font-weight: bold; border-bottom: 1px solid #eee; }
+        nav .closebtn { position: absolute; top: 10px; right: 25px; font-size: 36px; cursor: pointer; color: #333; }
+
+        /* Container de Notícias */
+        .container { max-width: 1000px; margin: 20px auto; padding: 0 15px; }
+        .card { background: white; margin-bottom: 20px; border-radius: 4px; overflow: hidden; cursor: pointer; border-bottom: 1px solid #ddd; transition: 0.2s; }
+        .card:hover { opacity: 0.8; }
+        .card-content { padding: 20px; }
+        .tema { color: #C4170C; text-transform: uppercase; font-size: 12px; font-weight: bold; margin-bottom: 8px; display: block; }
+        .titulo { font-size: 24px; font-weight: bold; line-height: 1.2; margin: 0 0 10px 0; color: #111; }
+        .subtitulo { color: #666; font-size: 16px; margin-bottom: 10px; }
+        .autor { font-size: 12px; color: #999; }
+
+        /* Painel Administrativo */
+        #admin-panel { display: none; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 30px; }
+        input, textarea, select { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { background: #C4170C; color: white; border: none; padding: 12px 20px; cursor: pointer; font-weight: bold; width: 100%; border-radius: 4px; }
+        
+        /* Notícia Completa (Modal) */
+        #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 3000; overflow-y: auto; padding: 20px; box-sizing: border-box; }
+        .modal-header { max-width: 800px; margin: 0 auto; }
+        .btn-fechar { font-size: 20px; cursor: pointer; color: #C4170C; font-weight: bold; margin-bottom: 20px; display: inline-block; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="menu-icon" onclick="openNav()">☰</div>
+        <div class="logo">g1</div>
+        <div class="region">BROOKASIL</div>
+    </header>
+
+    <nav id="mySidebar">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <a href="#" onclick="filtrar('Home')">Home</a>
+        <a href="#" onclick="showAdmin()">✍️ Painel do Jornalista</a>
+        <hr>
+        <a href="#" onclick="filtrar('Política')">Política</a>
+        <a href="#" onclick="filtrar('Economia')">Economia</a>
+        <a href="#" onclick="filtrar('Cidades')">Cidades</a>
+        <a href="#" onclick="filtrar('Entretenimento')">Entretenimento</a>
+    </nav>
+
+    <div class="container">
+        <div id="admin-panel">
+            <h2>Postar Nova Notícia</h2>
+            <input type="text" id="tit" placeholder="Título da Notícia">
+            <input type="text" id="sub" placeholder="Subtítulo">
+            <textarea id="desc" rows="5" placeholder="Descrição completa (A notícia)"></textarea>
+            <input type="text" id="aut" placeholder="Nome do Autor">
+            <select id="tem">
+                <option value="Política">Política</option>
+                <option value="Economia">Economia</option>
+                <option value="Cidades">Cidades</option>
+                <option value="Entretenimento">Entretenimento</option>
+            </select>
+            <button onclick="postarNoticia()">PUBLICAR NO G1</button>
+            <button style="background: #666; margin-top: 5px;" onclick="hideAdmin()">CANCELAR</button>
+        </div>
+
+        <div id="news-feed">
+            </div>
+    </div>
+
+    <div id="modal">
+        <div class="modal-header">
+            <span class="btn-fechar" onclick="fecharNoticia()">← Voltar</span>
+            <div id="modal-content"></div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+    <script>
+        // Configuração do Firebase
+        const firebaseConfig = {
+            databaseURL: "https://g1-brookasil-default-rtdb.firebaseio.com/"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // Funções do Menu
+        function openNav() { document.getElementById("mySidebar").style.width = "250px"; }
+        function closeNav() { document.getElementById("mySidebar").style.width = "0"; }
+
+        function showAdmin() { document.getElementById("admin-panel").style.display = "block"; closeNav(); }
+        function hideAdmin() { document.getElementById("admin-panel").style.display = "none"; }
+
+        // Postar Notícia
+        function postarNoticia() {
+            const t = document.getElementById('tit').value;
+            const s = document.getElementById('sub').value;
+            const d = document.getElementById('desc').value;
+            const a = document.getElementById('aut').value;
+            const m = document.getElementById('tem').value;
+
+            if(t && s && d && a) {
+                db.ref('noticias').push({
+                    titulo: t, subtitulo: s, descricao: d, autor: a, tema: m, data: Date.now()
+                });
+                alert("Sucesso! Notícia no ar.");
+                hideAdmin();
+            } else {
+                alert("Preencha todos os campos!");
+            }
+        }
+
+        // Carregar Notícias do Banco
+        function carregarNoticias(filtro = 'Home') {
+            const feed = document.getElementById('news-feed');
+            db.ref('noticias').orderByChild('data').on('value', (snapshot) => {
+                feed.innerHTML = "";
+                let noticias = [];
+                snapshot.forEach(child => { noticias.push(child.val()); });
+                noticias.reverse().forEach(post => {
+                    if(filtro === 'Home' || post.tema === filtro) {
+                        feed.innerHTML += `
+                            <div class="card" onclick="lerNoticia('${post.titulo}', '${post.autor}', '${post.descricao.replace(/\n/g, '<br>')}', '${post.tema}')">
+                                <div class="card-content">
+                                    <span class="tema">${post.tema}</span>
+                                    <h2 class="titulo">${post.titulo}</h2>
+                                    <p class="subtitulo">${post.subtitulo}</p>
+                                    <span class="autor">Por ${post.autor}</span>
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+            });
+        }
+
+        function filtrar(tema) {
+            carregarNoticias(tema);
+            closeNav();
+        }
+
+        function lerNoticia(t, a, d, m) {
+            const modal = document.getElementById('modal');
+            const content = document.getElementById('modal-content');
+            content.innerHTML = `
+                <span class="tema">${m}</span>
+                <h1 style="font-size:32px">${t}</h1>
+                <p style="color:#666">Por ${a}</p>
+                <hr style="border:0; border-top:1px solid #eee; margin:20px 0;">
+                <div style="font-size:18px; line-height:1.6; color:#333">${d}</div>
+            `;
+            modal.style.display = "block";
+            document.body.style.overflow = "hidden";
+        }
+
+        function fecharNoticia() {
+            document.getElementById('modal').style.display = "none";
+            document.body.style.overflow = "auto";
+        }
+
+        // Iniciar
+        carregarNoticias();
+    </script>
+</body>
+</html>
