@@ -3,142 +3,228 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>g1 - Brookasil Oficial</title>
+    <title>g1 - Brookasil: O portal de notícias</title>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;700;800&display=swap" rel="stylesheet">
     <style>
-        :root { --g1-red: #C4170C; --g1-bg: #f6f6f6; --xmas-green: #0a5c2f; --text-main: #333; }
-        body { font-family: 'Open Sans', sans-serif; margin: 0; background: var(--g1-bg); color: var(--text-main); }
+        :root {
+            --g1-red: #C4170C;
+            --g1-dark-red: #a3130a;
+            --bg-gray: #f6f6f6;
+            --text-black: #111;
+            --text-gray: #666;
+            --border: #ddd;
+        }
 
-        header { background: var(--g1-red); color: white; padding: 0 20px; display: flex; align-items: center; position: sticky; top: 0; z-index: 1000; height: 65px; justify-content: space-between; }
-        .logo { font-weight: 900; font-size: 32px; letter-spacing: -2px; cursor: pointer; color: white; text-decoration: none; }
-        
-        .user-badge { display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.2); padding: 5px 15px; border-radius: 25px; cursor: pointer; }
-        .avatar-mini { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; background: #eee; }
+        /* RESET E BASE */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Open Sans', sans-serif; background-color: var(--bg-gray); color: var(--text-black); line-height: 1.6; overflow-x: hidden; }
 
-        .weather-bar { background: white; border-bottom: 1px solid #ddd; padding: 10px; text-align: center; font-size: 13px; font-weight: bold; }
+        /* HEADER ORIGINAL G1 */
+        .g1-header { background: var(--g1-red); color: white; height: 65px; position: sticky; top: 0; z-index: 2000; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .header-left { display: flex; align-items: center; gap: 20px; }
+        .menu-toggle { cursor: pointer; display: flex; flex-direction: column; gap: 5px; padding: 10px; }
+        .menu-toggle div { width: 25px; height: 3px; background: white; border-radius: 2px; }
+        .g1-logo { font-size: 38px; font-weight: 800; letter-spacing: -3px; text-decoration: none; color: white; cursor: pointer; }
+        .g1-logo span { font-weight: 400; font-size: 18px; letter-spacing: 0; margin-left: 4px; opacity: 0.9; }
 
-        /* MENU DE TEMAS */
-        .sub-nav { background: white; border-bottom: 1px solid #ddd; display: flex; justify-content: center; overflow-x: auto; position: sticky; top: 65px; z-index: 999; }
-        .sub-nav a { padding: 15px; font-size: 12px; font-weight: 800; color: var(--g1-red); text-transform: uppercase; text-decoration: none; cursor: pointer; }
+        .header-right { display: flex; align-items: center; gap: 15px; }
+        .user-profile-pill { background: rgba(0,0,0,0.15); padding: 5px 15px; border-radius: 30px; display: flex; align-items: center; gap: 10px; cursor: pointer; transition: 0.3s; border: 1px solid rgba(255,255,255,0.1); }
+        .user-profile-pill:hover { background: rgba(0,0,0,0.3); }
+        .user-profile-pill img { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; background: white; }
+        .user-profile-pill span { font-size: 13px; font-weight: 700; color: white; }
 
-        .container { max-width: 1000px; margin: 20px auto; padding: 0 20px; }
-        .section { display: none; }
-        .section.active { display: block; }
+        /* BARRA DE CLIMA PROFISSIONAL */
+        .weather-bar { background: white; border-bottom: 1px solid var(--border); padding: 8px 0; display: flex; justify-content: center; align-items: center; gap: 20px; font-size: 12px; font-weight: 700; color: #444; }
+        .live-dot { width: 8px; height: 8px; background: var(--g1-red); border-radius: 50%; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
 
-        /* CARDS */
-        .news-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
-        .card { background: white; border-radius: 8px; overflow: hidden; border-bottom: 1px solid #ddd; cursor: pointer; }
-        .card-img { width: 100%; height: 180px; object-fit: cover; }
-        .card-body { padding: 15px; }
-        .tag { color: var(--g1-red); font-size: 11px; font-weight: bold; text-transform: uppercase; }
+        /* NAVEGAÇÃO DE TEMAS */
+        .topics-nav { background: white; border-bottom: 1px solid var(--border); display: flex; justify-content: center; overflow-x: auto; position: sticky; top: 65px; z-index: 1500; }
+        .topics-nav a { padding: 15px 18px; color: var(--g1-red); text-decoration: none; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; transition: 0.2s; }
+        .topics-nav a:hover { background: #fff5f5; }
+        .topics-nav a.active { border-bottom: 3px solid var(--g1-red); }
 
-        /* PERFIL */
-        .profile-header { text-align: center; padding: 30px; background: white; border-radius: 12px; margin-bottom: 20px; }
-        .avatar-main { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 4px solid var(--g1-red); margin-bottom: 15px; }
+        /* CONTEÚDO PRINCIPAL */
+        .main-container { max-width: 1140px; margin: 20px auto; padding: 0 15px; min-height: 100vh; }
+        .page-section { display: none; animation: fadeIn 0.5s ease-out; }
+        .page-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* BOTÕES E INPUTS */
-        .btn { background: var(--g1-red); color: white; border: none; padding: 12px 20px; border-radius: 5px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; }
-        input, textarea, select { width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        /* GRID DE NOTÍCIAS G1 STYLE */
+        .news-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 30px; }
+        .news-card { background: white; border-bottom: 1px solid var(--border); cursor: pointer; transition: 0.3s; }
+        .news-card:hover { opacity: 0.85; }
+        .news-card-img { width: 100%; height: 210px; object-fit: cover; }
+        .news-card-content { padding: 15px 0; }
+        .news-card-category { color: var(--g1-red); font-size: 11px; font-weight: 800; text-transform: uppercase; margin-bottom: 8px; display: block; }
+        .news-card-title { font-size: 24px; font-weight: 800; line-height: 1.1; color: var(--text-black); margin-bottom: 10px; letter-spacing: -0.5px; }
+        .news-card-desc { font-size: 15px; color: var(--text-gray); line-height: 1.4; margin-bottom: 8px; }
+        .news-card-time { font-size: 11px; color: #999; font-weight: 400; }
 
-        /* MODAL */
-        #news-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; overflow-y: auto; padding: 40px 0; }
-        .modal-inner { max-width: 700px; margin: 0 auto; padding: 20px; }
-        .actions { display: flex; gap: 20px; margin: 20px 0; border-top: 1px solid #eee; padding-top: 15px; }
+        /* PERFIL E FORMULÁRIOS */
+        .glass-box { background: white; padding: 40px; border-radius: 4px; border: 1px solid var(--border); max-width: 650px; margin: 0 auto; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 12px; font-weight: 800; margin-bottom: 8px; text-transform: uppercase; color: #555; }
+        input[type="text"], input[type="password"], textarea, select { width: 100%; padding: 14px; border: 1px solid #ccc; border-radius: 4px; font-size: 15px; font-family: inherit; }
+        .btn-main { background: var(--g1-red); color: white; border: none; padding: 16px; border-radius: 4px; font-weight: 800; font-size: 14px; cursor: pointer; width: 100%; text-transform: uppercase; transition: 0.3s; }
+        .btn-main:hover { background: var(--g1-dark-red); }
 
-        #toast { display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 12px 25px; border-radius: 30px; z-index: 3000; }
+        /* LEITURA DE NOTÍCIA (MODAL) */
+        #article-viewer { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 3000; overflow-y: auto; }
+        .article-container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .article-header { border-bottom: 1px solid #eee; margin-bottom: 30px; padding-bottom: 20px; }
+        .article-title { font-size: 42px; font-weight: 800; line-height: 1.1; margin-bottom: 15px; }
+        .article-sub { font-size: 20px; color: #555; line-height: 1.4; margin-bottom: 20px; }
+        .article-meta { font-size: 13px; color: #888; border-top: 1px solid #eee; padding-top: 15px; }
+        .article-content { font-size: 19px; line-height: 1.8; color: #333; }
+        .article-image { width: 100%; border-radius: 4px; margin: 25px 0; }
+
+        /* COMENTÁRIOS */
+        .comment-section { margin-top: 50px; background: #fafafa; padding: 30px; border-radius: 8px; }
+        .comment-item { display: flex; gap: 15px; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #eee; }
+        .comment-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+        .comment-body b { font-size: 14px; color: var(--g1-red); }
+        .comment-body p { font-size: 15px; color: #444; }
+
+        /* TOAST NOTIFICATION */
+        #toast { display: none; position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #222; color: white; padding: 12px 30px; border-radius: 50px; z-index: 9999; font-weight: 700; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+
+        /* RESPONSIVIDADE */
+        @media (max-width: 768px) {
+            .article-title { font-size: 30px; }
+            .news-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
 
     <div id="toast">Sucesso!</div>
 
-    <header>
-        <div style="display:flex; align-items:center;">
-            <span style="font-size:24px; margin-right:15px; cursor:pointer;" onclick="abrirMenu()">☰</span>
-            <a class="logo" onclick="location.reload()">g1</a>
+    <header class="g1-header">
+        <div class="header-left">
+            <div class="menu-toggle" onclick="toggleAdminPanel()">
+                <div></div><div></div><div></div>
+            </div>
+            <a class="g1-logo" onclick="window.location.reload()">g1<span>Brookasil</span></a>
         </div>
-        <div class="user-badge" onclick="irPara('conta')">
-            <img id="header-avatar" class="avatar-mini" src="">
-            <span id="header-nome">Entrar</span>
+        <div class="header-right">
+            <div class="user-profile-pill" onclick="showSection('profile')">
+                <img id="nav-user-img" src="https://www.w3schools.com/howto/img_avatar.png">
+                <span id="nav-user-name">Minha Conta</span>
+            </div>
         </div>
     </header>
 
-    <div class="weather-bar" id="clima-bar">🌤️ Brookasil: 25°C</div>
-
-    <div class="sub-nav">
-        <a onclick="filtrar('Tudo')">Tudo</a>
-        <a onclick="filtrar('Política')">Política</a>
-        <a onclick="filtrar('Policial')">Policial</a>
-        <a onclick="filtrar('Cidades')">Cidades</a>
-        <a onclick="filtrar('Saúde')">Saúde</a>
+    <div class="weather-bar">
+        <div class="live-dot"></div>
+        <span id="clima-text">BROOKASIL: 24°C — Nublado</span>
+        <span style="color:var(--border)">|</span>
+        <span id="current-time-display">Carregando hora...</span>
     </div>
 
-    <div class="container">
-        <div id="sec-noticias" class="section active">
-            <div id="feed" class="news-grid"></div>
-        </div>
+    <nav class="topics-nav">
+        <a onclick="loadFeed('Tudo')" class="active">Tudo</a>
+        <a onclick="loadFeed('Política')">Política</a>
+        <a onclick="loadFeed('Policial')">Policial</a>
+        <a onclick="loadFeed('Cidades')">Cidades</a>
+        <a onclick="loadFeed('Saúde')">Saúde</a>
+    </nav>
 
-        <div id="sec-conta" class="section">
-            <div class="profile-header">
-                <img id="p-img" class="avatar-main" src="https://via.placeholder.com/150">
-                <h2 id="p-nome">Seu Nome</h2>
-                <p id="p-bio">Sua biografia aparecerá aqui.</p>
-                <div style="color: #666; font-size: 14px;">Seguidores: <b id="p-subs">0</b></div>
-                <hr>
-                <h4>Editar Perfil</h4>
-                <input type="text" id="edit-nome" placeholder="Nome no RP">
-                <textarea id="edit-bio" placeholder="Biografia"></textarea>
-                <p>Alterar Foto (Galeria):</p>
-                <input type="file" id="file-avatar" accept="image/*" onchange="previewImage(this, 'p-img')">
-                <button class="btn" onclick="salvarPerfil()">Salvar Perfil</button>
+    <main class="main-container">
+        
+        <section id="sec-feed" class="page-section active">
+            <div id="news-container" class="news-grid">
+                </div>
+        </section>
+
+        <section id="sec-profile" class="page-section">
+            <div class="glass-box">
+                <h2 style="text-align:center; margin-bottom:30px;">Meu Perfil G1</h2>
+                <div style="text-align:center; margin-bottom:20px;">
+                    <img id="profile-preview" src="https://www.w3schools.com/howto/img_avatar.png" style="width:120px; height:120px; border-radius:50%; object-fit:cover; border:3px solid var(--g1-red);">
+                </div>
+                <div class="form-group">
+                    <label>Seu Nome no RP:</label>
+                    <input type="text" id="user-name-in" placeholder="Ex: Roberto_Mendes">
+                </div>
+                <div class="form-group">
+                    <label>Biografia:</label>
+                    <textarea id="user-bio-in" rows="3" placeholder="Conte um pouco sobre seu personagem..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Foto de Perfil (Galeria):</label>
+                    <input type="file" accept="image/*" onchange="processImage(this, 'profile-preview')">
+                </div>
+                <button class="btn-main" onclick="saveUserProfile()">Salvar Dados do Perfil</button>
             </div>
-        </div>
+        </section>
 
-        <div id="sec-admin" class="section">
-            <div style="background:white; padding:25px; border-radius:10px;">
-                <div id="admin-login">
-                    <h2>Acesso Restrito</h2>
-                    <input type="password" id="pass" placeholder="Digite sua senha">
-                    <button class="btn" onclick="logarAdmin()">Entrar</button>
+        <section id="sec-admin" class="page-section">
+            <div class="glass-box">
+                <div id="admin-auth">
+                    <h2 style="margin-bottom:20px;">Acesso ao Painel</h2>
+                    <input type="password" id="admin-password" placeholder="Digite a senha (Dono ou Jornalista)">
+                    <button class="btn-main" style="margin-top:15px;" onclick="authenticateAdmin()">Entrar no Sistema</button>
                 </div>
 
-                <div id="admin-panel" style="display:none">
-                    <h2 id="panel-title">Painel</h2>
-                    <div id="dono-only" style="display:none">
-                        <label>Alterar Clima:</label>
-                        <input type="text" id="clima-in" placeholder="Ex: ⛈️ Chuva: 20°C">
-                        <button class="btn" style="background:#444" onclick="db.ref('clima').set(document.getElementById('clima-in').value)">Mudar Clima</button>
-                        <hr>
+                <div id="admin-controls" style="display:none;">
+                    <h2 id="admin-status-title">Painel de Controle</h2>
+                    <hr style="margin:20px 0;">
+                    
+                    <div id="dono-only-tools" style="display:none; background:#fff0f0; padding:15px; border-radius:4px; margin-bottom:20px;">
+                        <label style="font-weight:800; font-size:11px;">Mudar Clima do Servidor:</label>
+                        <input type="text" id="clima-input" placeholder="Ex: ⛈️ Tempestade: 19°C">
+                        <button class="btn-main" style="background:#333; margin-top:10px;" onclick="updateClima()">Atualizar Clima</button>
                     </div>
-                    <h3>✍️ Nova Notícia</h3>
-                    <input type="text" id="tit" placeholder="Título">
-                    <select id="tema-sel">
-                        <option>Política</option><option>Policial</option><option>Cidades</option><option>Saúde</option>
-                    </select>
-                    <textarea id="texto" rows="6" placeholder="Texto da notícia"></textarea>
-                    <p>Foto da Notícia (Galeria):</p>
-                    <input type="file" id="file-noticia" accept="image/*" onchange="previewImage(this, 'img-prev')">
-                    <img id="img-prev" style="width:100px; display:none; margin-bottom:10px;">
-                    <button class="btn" onclick="postarNoticia()">Publicar no G1</button>
+
+                    <h3>Nova Reportagem</h3>
+                    <div class="form-group">
+                        <label>Título Principal:</label>
+                        <input type="text" id="post-title" placeholder="Título forte e curto">
+                    </div>
+                    <div class="form-group">
+                        <label>Subtítulo (Resumo):</label>
+                        <input type="text" id="post-subtitle" placeholder="Breve resumo da notícia">
+                    </div>
+                    <div class="form-group">
+                        <label>Autor:</label>
+                        <input type="text" id="post-author" placeholder="Seu nome ou G1 Brookasil">
+                    </div>
+                    <div class="form-group">
+                        <label>Tema da Notícia:</label>
+                        <select id="post-category">
+                            <option>Política</option><option>Policial</option>
+                            <option>Cidades</option><option>Saúde</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Conteúdo da Notícia:</label>
+                        <textarea id="post-body" rows="10" placeholder="Escreva a reportagem completa aqui..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Foto de Capa (Galeria):</label>
+                        <input type="file" accept="image/*" onchange="processImage(this, 'post-img-preview')">
+                        <img id="post-img-preview" style="width:100%; margin-top:15px; display:none; border-radius:4px;">
+                    </div>
+                    <button class="btn-main" onclick="publishNews()">Publicar no Portal G1</button>
                 </div>
             </div>
-        </div>
-    </div>
+        </section>
+    </main>
 
-    <div id="news-modal">
-        <div class="modal-inner">
-            <button class="btn" style="width:auto" onclick="fecharModal()">← Voltar</button>
-            <div id="m-content"></div>
-            <div class="actions">
-                <span onclick="acao('like')" style="cursor:pointer">❤️ Curtir</span>
-                <span onclick="acao('repub')" style="cursor:pointer">🔄 Republicar</span>
-                <span onclick="acao('seguir')" style="cursor:pointer">👤 Seguir Autor</span>
-            </div>
-            <hr>
-            <h4>Comentários</h4>
-            <div id="comm-list"></div>
-            <div style="display:flex; gap:10px; margin-top:10px;">
-                <input type="text" id="c-in" placeholder="Escreva...">
-                <button class="btn" style="width:100px; margin:0" onclick="comentar()">Enviar</button>
+    <div id="article-viewer">
+        <div class="article-container">
+            <button class="btn-main" style="width:auto; background:#666; padding:10px 25px;" onclick="closeArticle()">← Voltar para a Capa</button>
+            <div id="article-data">
+                </div>
+            
+            <div class="comment-section">
+                <h3>Comentários</h3>
+                <div id="article-comments"></div>
+                <div style="margin-top:30px;">
+                    <textarea id="comment-text" rows="3" placeholder="Escreva um comentário público..."></textarea>
+                    <button class="btn-main" style="margin-top:10px;" onclick="postComment()">Enviar Comentário</button>
+                </div>
             </div>
         </div>
     </div>
@@ -147,147 +233,260 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
     <script>
+        // CONFIGURAÇÃO FIREBASE
         const firebaseConfig = { databaseURL: "https://g1-brookasil-default-rtdb.firebaseio.com/" };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        let base64Image = "";
-        let noticiaAtiva = "";
+        let currentImageBase64 = "";
+        let activeNewsID = "";
+        let userRole = "visitante";
 
-        // FUNÇÃO PARA PEGAR IMAGEM DA GALERIA
-        function previewImage(input, targetID) {
+        // --- SISTEMA DE IMAGENS (COMPRESSÃO) ---
+        function processImage(input, previewID) {
             const file = input.files[0];
+            if (!file) return;
+
             const reader = new FileReader();
-            reader.onloadend = function() {
-                base64Image = reader.result;
-                document.getElementById(targetID).src = reader.result;
-                document.getElementById(targetID).style.display = "block";
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    let width = img.width;
+                    let height = img.height;
+                    
+                    // Redimensionar para max 800px para economizar banco de dados
+                    if (width > 800) { height *= 800 / width; width = 800; }
+                    
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    currentImageBase64 = canvas.toDataURL('image/jpeg', 0.7);
+                    document.getElementById(previewID).src = currentImageBase64;
+                    document.getElementById(previewID).style.display = 'block';
+                }
+                img.src = e.target.result;
             }
-            if (file) reader.readAsDataURL(file);
+            reader.readAsDataURL(file);
         }
 
-        // PERFIL
-        function salvarPerfil() {
-            const user = {
-                nome: document.getElementById('edit-nome').value,
-                bio: document.getElementById('edit-bio').value,
-                foto: base64Image || document.getElementById('p-img').src
+        // --- GERENCIAMENTO DE INTERFACE ---
+        function showSection(id) {
+            document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+            document.getElementById('sec-' + id).classList.add('active');
+            window.scrollTo(0,0);
+        }
+
+        function toggleAdminPanel() {
+            showSection('admin');
+        }
+
+        // --- SISTEMA DE PERFIL ---
+        function saveUserProfile() {
+            const profile = {
+                name: document.getElementById('user-name-in').value,
+                bio: document.getElementById('user-bio-in').value,
+                pic: currentImageBase64 || document.getElementById('profile-preview').src
             };
-            localStorage.setItem('g1_user', JSON.stringify(user));
-            showToast("Perfil Salvo!");
-            location.reload();
+            if(!profile.name) return alert("Por favor, digite seu nome!");
+            
+            localStorage.setItem('g1_brookasil_profile', JSON.stringify(profile));
+            toast("Perfil atualizado com sucesso!");
+            setTimeout(() => location.reload(), 1000);
         }
 
-        function carregarPerfil() {
-            const u = JSON.parse(localStorage.getItem('g1_user'));
-            if(u) {
-                document.getElementById('header-nome').innerText = u.nome;
-                document.getElementById('header-avatar').src = u.foto;
-                document.getElementById('p-nome').innerText = u.nome;
-                document.getElementById('p-bio').innerText = u.bio;
-                document.getElementById('p-img').src = u.foto;
-                document.getElementById('edit-nome').value = u.nome;
-                document.getElementById('edit-bio').value = u.bio;
+        function loadUserProfile() {
+            const saved = localStorage.getItem('g1_brookasil_profile');
+            if (saved) {
+                const p = JSON.parse(saved);
+                document.getElementById('nav-user-name').innerText = p.name;
+                document.getElementById('nav-user-img').src = p.pic;
+                document.getElementById('profile-preview').src = p.pic;
+                document.getElementById('user-name-in').value = p.name;
+                document.getElementById('user-bio-in').value = p.bio;
+                // Preencher autor automático no post
+                document.getElementById('post-author').value = p.name;
             }
         }
 
-        // ADMIN
-        function logarAdmin() {
-            const p = document.getElementById('pass').value;
-            if(p === "Brookasil1234") {
-                document.getElementById('admin-login').style.display = 'none';
-                document.getElementById('admin-panel').style.display = 'block';
-                document.getElementById('dono-only').style.display = 'block';
-                document.getElementById('panel-title').innerText = "Painel do Dono";
-            } else if(p === "G1_Brookasil") {
-                document.getElementById('admin-login').style.display = 'none';
-                document.getElementById('admin-panel').style.display = 'block';
-                document.getElementById('panel-title').innerText = "Painel Jornalista";
-            } else { alert("Senha incorreta!"); }
-        }
-
-        function postarNoticia() {
-            const t = document.getElementById('tit').value;
-            const tx = document.getElementById('texto').value;
-            const tema = document.getElementById('tema-sel').value;
-            if(t && tx) {
-                db.ref('posts').push({
-                    titulo: t, texto: tx, tema: tema, foto: base64Image, autor: document.getElementById('header-nome').innerText, data: Date.now()
-                }).then(() => { showToast("Notícia publicada!"); irPara('noticias'); });
+        // --- ADMIN E POSTAGENS ---
+        function authenticateAdmin() {
+            const pass = document.getElementById('admin-password').value;
+            if (pass === "Brookasil1234") {
+                userRole = "dono";
+                document.getElementById('admin-auth').style.display = 'none';
+                document.getElementById('admin-controls').style.display = 'block';
+                document.getElementById('dono-only-tools').style.display = 'block';
+                document.getElementById('admin-status-title').innerText = "Painel Master (Dono)";
+            } else if (pass === "G1_Brookasil") {
+                userRole = "jornalista";
+                document.getElementById('admin-auth').style.display = 'none';
+                document.getElementById('admin-controls').style.display = 'block';
+                document.getElementById('admin-status-title').innerText = "Painel Jornalista";
+            } else {
+                alert("Senha Inválida!");
             }
         }
 
-        // FEED E FILTROS
-        function filtrar(tema) {
-            db.ref('posts').once('value', s => {
-                const feed = document.getElementById('feed'); feed.innerHTML = "";
-                s.forEach(item => {
-                    const p = item.val();
-                    if(tema === 'Tudo' || p.tema === tema) {
-                        feed.innerHTML += `
-                            <div class="card" onclick="abrirNoticia('${item.key}')">
-                                ${p.foto ? `<img src="${p.foto}" class="card-img">` : ''}
-                                <div class="card-body">
-                                    <span class="tag">${p.tema}</span>
-                                    <h2 style="font-size:18px; margin:10px 0;">${p.titulo}</h2>
-                                    <small>Por ${p.autor}</small>
+        function updateClima() {
+            const c = document.getElementById('clima-input').value;
+            if(c) db.ref('settings/clima').set(c).then(() => toast("Clima atualizado!"));
+        }
+
+        function publishNews() {
+            const news = {
+                title: document.getElementById('post-title').value,
+                subtitle: document.getElementById('post-subtitle').value,
+                author: document.getElementById('post-author').value,
+                category: document.getElementById('post-category').value,
+                body: document.getElementById('post-body').value,
+                image: currentImageBase64,
+                timestamp: Date.now(),
+                dateLabel: new Date().toLocaleString('pt-BR', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' })
+            };
+
+            if (!news.title || !news.body) return alert("Preencha o título e o texto!");
+
+            db.ref('news_posts').push(news).then(() => {
+                toast("NOTÍCIA PUBLICADA COM SUCESSO!");
+                setTimeout(() => location.reload(), 1500);
+            });
+        }
+
+        // --- FEED E LEITURA ---
+        function loadFeed(filter = 'Tudo') {
+            document.querySelectorAll('.topics-nav a').forEach(a => {
+                a.classList.remove('active');
+                if(a.innerText === filter) a.classList.add('active');
+            });
+
+            db.ref('news_posts').orderByChild('timestamp').on('value', snap => {
+                const container = document.getElementById('news-container');
+                container.innerHTML = "";
+                let newsArray = [];
+
+                snap.forEach(child => {
+                    let data = child.val();
+                    data.id = child.key;
+                    newsArray.push(data);
+                });
+
+                newsArray.reverse().forEach(item => {
+                    if (filter === 'Tudo' || item.category === filter) {
+                        container.innerHTML += `
+                            <article class="news-card" onclick="viewArticle('${item.id}')">
+                                ${item.image ? `<img src="${item.image}" class="news-card-img">` : ''}
+                                <div class="news-card-content">
+                                    <span class="news-card-category">${item.category}</span>
+                                    <h2 class="news-card-title">${item.title}</h2>
+                                    <p class="news-card-desc">${item.subtitle || ''}</p>
+                                    <span class="news-card-time">${calculateTime(item.timestamp)} — Em Brookasil</span>
                                 </div>
-                            </div>`;
+                            </article>
+                        `;
                     }
                 });
             });
-            irPara('noticias');
+            showSection('feed');
         }
 
-        function abrirNoticia(id) {
-            noticiaAtiva = id;
-            db.ref('posts/'+id).once('value', s => {
-                const p = s.val();
-                document.getElementById('m-content').innerHTML = `
-                    <span class="tag">${p.tema}</span>
-                    <h1 style="margin:10px 0;">${p.titulo}</h1>
-                    <p style="color:#666">Publicado por <b>${p.autor}</b></p>
-                    ${p.foto ? `<img src="${p.foto}" style="width:100%; border-radius:8px;">` : ''}
-                    <p style="font-size:18px; line-height:1.6;">${p.texto.replace(/\n/g, '<br>')}</p>
+        function viewArticle(id) {
+            activeNewsID = id;
+            db.ref('news_posts/' + id).once('value', snap => {
+                const n = snap.val();
+                document.getElementById('article-data').innerHTML = `
+                    <div class="article-header">
+                        <span class="news-card-category">${n.category}</span>
+                        <h1 class="article-title">${n.title}</h1>
+                        <p class="article-sub">${n.subtitle || ''}</p>
+                        <div class="article-meta">
+                            Por <b>${n.author}</b>, G1 Brookasil<br>
+                            ${n.dateLabel}
+                        </div>
+                    </div>
+                    ${n.image ? `<img src="${n.image}" class="article-image">` : ''}
+                    <div class="article-content">${n.body.replace(/\n/g, '<br><br>')}</div>
                 `;
-                document.getElementById('news-modal').style.display = 'block';
-                carregarComentarios(id);
+                document.getElementById('article-viewer').style.display = 'block';
+                document.body.style.overflow = 'hidden';
+                loadComments(id);
             });
         }
 
-        function comentar() {
-            const u = JSON.parse(localStorage.getItem('g1_user'));
-            const msg = document.getElementById('c-in').value;
-            if(!u) return alert("Crie um perfil primeiro!");
-            if(msg) db.ref('comentarios/'+noticiaAtiva).push({ nome: u.nome, foto: u.foto, msg: msg });
+        function closeArticle() {
+            document.getElementById('article-viewer').style.display = 'none';
+            document.body.style.overflow = 'auto';
         }
 
-        function carregarComentarios(id) {
-            db.ref('comentarios/'+id).on('value', s => {
-                const list = document.getElementById('comm-list'); list.innerHTML = "";
-                s.forEach(c => {
-                    list.innerHTML += `<div style="margin-bottom:10px; font-size:14px;">
-                        <img src="${c.val().foto}" style="width:20px; height:20px; border-radius:50%; vertical-align:middle;">
-                        <b>${c.val().nome}:</b> ${c.val().msg}</div>`;
+        // --- SISTEMA DE COMENTÁRIOS ---
+        function postComment() {
+            const user = JSON.parse(localStorage.getItem('g1_brookasil_profile'));
+            const text = document.getElementById('comment-text').value;
+
+            if(!user) return alert("Você precisa criar uma conta primeiro!");
+            if(!text) return;
+
+            db.ref('comments/' + activeNewsID).push({
+                userName: user.name,
+                userPic: user.pic,
+                text: text,
+                timestamp: Date.now()
+            }).then(() => {
+                document.getElementById('comment-text').value = "";
+                toast("Comentário enviado!");
+            });
+        }
+
+        function loadComments(newsID) {
+            db.ref('comments/' + newsID).on('value', snap => {
+                const box = document.getElementById('article-comments');
+                box.innerHTML = "";
+                snap.forEach(c => {
+                    const val = c.val();
+                    box.innerHTML += `
+                        <div class="comment-item">
+                            <img src="${val.userPic}" class="comment-avatar">
+                            <div class="comment-body">
+                                <b>${val.userName}</b>
+                                <p>${val.text}</p>
+                            </div>
+                        </div>
+                    `;
                 });
             });
         }
 
-        function acao(tipo) {
-            showToast("Você realizou: " + tipo + "!");
+        // --- UTILITÁRIOS ---
+        function calculateTime(ts) {
+            const diff = Math.floor((Date.now() - ts) / 1000);
+            if (diff < 60) return "Há poucos segundos";
+            if (diff < 3600) return `Há ${Math.floor(diff/60)} min`;
+            if (diff < 86400) return `Há ${Math.floor(diff/3600)} horas`;
+            return "Há mais de 1 dia";
         }
 
-        function irPara(id) {
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.getElementById('sec-' + id).classList.add('active');
+        function toast(msg) {
+            const t = document.getElementById('toast');
+            t.innerText = msg;
+            t.style.display = 'block';
+            setTimeout(() => t.style.display = 'none', 3000);
         }
 
-        function abrirMenu() { irPara('admin'); }
-        function fecharModal() { document.getElementById('news-modal').style.display = 'none'; }
-        function showToast(m) { const t = document.getElementById('toast'); t.innerText=m; t.style.display='block'; setTimeout(()=>t.style.display='none',2000); }
+        // Clock em tempo real
+        setInterval(() => {
+            document.getElementById('current-time-display').innerText = new Date().toLocaleTimeString('pt-BR');
+        }, 1000);
 
-        window.onload = () => { carregarPerfil(); filtrar('Tudo'); };
-        db.ref('clima').on('value', s => { if(s.val()) document.getElementById('clima-bar').innerText = s.val(); });
+        // Listeners do Banco
+        db.ref('settings/clima').on('value', s => { if(s.val()) document.getElementById('clima-text').innerText = s.val(); });
+
+        // Inicialização
+        window.onload = () => {
+            loadUserProfile();
+            loadFeed('Tudo');
+        };
     </script>
 </body>
 </html>
