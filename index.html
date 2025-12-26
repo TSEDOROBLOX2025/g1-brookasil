@@ -3,162 +3,289 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>g1 - Brookasil Oficial</title>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;700;800&display=swap" rel="stylesheet">
+    <title>g1 - Brookasil - O portal de notícias do RP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --g1-red: #C4170C;
-            --g1-dark-red: #a3130a;
+            --g1-dark: #a3130a;
             --bg-gray: #f6f6f6;
-            --text-black: #111;
-            --text-gray: #666;
+            --text-main: #111;
+            --text-sub: #666;
             --border: #ddd;
+            --link-blue: #0645ad;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Open Sans', sans-serif; }
-        body { background-color: var(--bg-gray); color: var(--text-black); overflow-x: hidden; }
+        body { background-color: var(--bg-gray); color: var(--text-main); overflow-x: hidden; }
 
-        /* HEADER & NAV */
-        header { background: var(--g1-red); color: white; height: 65px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; position: sticky; top: 0; z-index: 1000; }
-        .logo { font-weight: 900; font-size: 32px; letter-spacing: -2px; cursor: pointer; }
-        .logo span { font-weight: 400; font-size: 18px; letter-spacing: 0; margin-left: 5px; opacity: 0.9; }
+        /* --- HEADER ESTILO g1 --- */
+        header {
+            background: var(--g1-red);
+            height: 65px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            position: sticky;
+            top: 0;
+            z-index: 2000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .header-left { display: flex; align-items: center; gap: 20px; }
+        .menu-toggle { font-size: 28px; color: white; cursor: pointer; user-select: none; }
+        .logo { font-weight: 800; font-size: 36px; letter-spacing: -3px; color: white; text-decoration: none; cursor: pointer; }
+        .logo span { font-weight: 400; font-size: 16px; letter-spacing: 0; margin-left: 4px; opacity: 0.8; }
         
-        .user-pill { background: rgba(0,0,0,0.2); padding: 6px 15px; border-radius: 20px; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 8px; }
-        .user-pill img { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; background: #fff; }
+        .user-area { display: flex; align-items: center; gap: 10px; color: white; cursor: pointer; background: rgba(0,0,0,0.1); padding: 5px 12px; border-radius: 20px; }
+        .user-area img { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; background: #fff; }
 
-        /* MENU LATERAL */
-        #side-menu { position: fixed; top: 0; left: -300px; width: 300px; height: 100%; background: white; box-shadow: 5px 0 15px rgba(0,0,0,0.1); z-index: 2000; transition: 0.3s; padding: 20px; }
-        #side-menu.active { left: 0; }
-        .menu-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 1999; }
-        .menu-item { padding: 15px; border-bottom: 1px solid #eee; color: var(--g1-red); font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 13px; }
+        /* --- SUB-BARRA INFO --- */
+        .sub-bar {
+            background: white;
+            border-bottom: 1px solid var(--border);
+            padding: 10px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 25px;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-sub);
+        }
+        .live-dot { width: 8px; height: 8px; background: var(--g1-red); border-radius: 50%; display: inline-block; margin-right: 5px; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
 
-        /* BARRA INFO */
-        .info-bar { background: white; border-bottom: 1px solid var(--border); padding: 8px 20px; display: flex; justify-content: center; gap: 20px; font-size: 12px; font-weight: bold; color: var(--text-gray); }
+        /* --- FILTROS --- */
+        .filter-nav {
+            background: white;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: center;
+            overflow-x: auto;
+            position: sticky;
+            top: 65px;
+            z-index: 1000;
+        }
+        .filter-nav button {
+            background: none;
+            border: none;
+            padding: 15px 20px;
+            color: var(--g1-red);
+            font-weight: 800;
+            font-size: 12px;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+        }
+        .filter-nav button.active { border-bottom-color: var(--g1-red); }
 
-        /* GRID */
-        .container { max-width: 1100px; margin: 20px auto; padding: 0 15px; min-height: 80vh; }
-        .section { display: none; animation: fadeIn 0.3s ease; }
+        /* --- LAYOUT PRINCIPAL --- */
+        .container { max-width: 1140px; margin: 20px auto; padding: 0 15px; display: grid; grid-template-columns: 1fr 300px; gap: 30px; }
+        @media (max-width: 900px) { .container { grid-template-columns: 1fr; } .sidebar { display: none; } }
+
+        /* --- CARDS DE NOTÍCIAS --- */
+        .main-content { display: flex; flex-direction: column; gap: 30px; }
+        .section { display: none; }
         .section.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .news-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; }
-        .card { background: white; border-bottom: 1px solid var(--border); cursor: pointer; }
-        .card img { width: 100%; height: 200px; object-fit: cover; }
-        .card-body { padding: 15px 0; }
-        .card-cat { color: var(--g1-red); font-size: 11px; font-weight: 800; text-transform: uppercase; }
-        .card-title { font-size: 22px; font-weight: 800; line-height: 1.1; margin: 10px 0; }
+        .news-card { background: white; border-bottom: 1px solid var(--border); padding-bottom: 20px; cursor: pointer; transition: 0.2s; }
+        .news-card:hover .news-title { color: var(--g1-red); }
+        .news-img { width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 4px; }
+        .news-body { padding: 15px 0; }
+        .news-cat { color: var(--g1-red); font-size: 11px; font-weight: 800; text-transform: uppercase; }
+        .news-title { font-size: 26px; font-weight: 800; line-height: 1.2; margin: 8px 0; }
+        .news-sub { color: var(--text-sub); font-size: 16px; margin-bottom: 10px; }
+        .news-meta { font-size: 11px; color: #999; }
 
-        /* FORMULÁRIOS */
-        .box { background: white; padding: 25px; border: 1px solid var(--border); margin-bottom: 20px; border-radius: 4px; }
-        input, textarea, select { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; font-size: 15px; }
-        .btn { background: var(--g1-red); color: white; border: none; padding: 12px; border-radius: 4px; font-weight: bold; cursor: pointer; width: 100%; text-transform: uppercase; }
-        .btn:hover { background: var(--g1-dark-red); }
+        /* DESTAQUE */
+        .featured-card { border-bottom: 4px solid var(--g1-red); }
+        .featured-card .news-title { font-size: 38px; }
 
-        /* MODAL NOTICIA */
-        #modal-noticia { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 3000; display: none; overflow-y: auto; padding: 40px 20px; }
-        .modal-body { max-width: 800px; margin: 0 auto; }
-        .modal-img { width: 100%; border-radius: 4px; margin: 20px 0; }
+        /* --- MENU LATERAL --- */
+        #side-menu {
+            position: fixed;
+            top: 0;
+            left: -320px;
+            width: 300px;
+            height: 100%;
+            background: white;
+            z-index: 3000;
+            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 30px 20px;
+            box-shadow: 5px 0 25px rgba(0,0,0,0.2);
+        }
+        #side-menu.open { left: 0; }
+        .menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2500; display: none; }
+        .menu-item { padding: 15px; border-bottom: 1px solid #eee; font-weight: 700; color: var(--g1-red); cursor: pointer; text-transform: uppercase; font-size: 14px; }
+        .menu-item:hover { background: #f9f9f9; }
 
-        #toast { display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 12px 25px; border-radius: 30px; z-index: 6000; }
+        /* --- PAINÉIS E BOXES --- */
+        .box { background: white; padding: 25px; border: 1px solid var(--border); border-radius: 4px; margin-bottom: 20px; }
+        h2 { border-left: 5px solid var(--g1-red); padding-left: 10px; margin-bottom: 20px; font-size: 22px; }
+        input, textarea, select { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; }
+        .btn { background: var(--g1-red); color: white; border: none; padding: 14px; font-weight: 800; cursor: pointer; width: 100%; text-transform: uppercase; border-radius: 4px; }
+        .btn:hover { background: var(--g1-dark); }
+        .btn-delete { background: #333; margin-top: 5px; font-size: 10px; padding: 5px; }
+
+        /* --- MODAL DE NOTÍCIA --- */
+        #modal-view { position: fixed; inset: 0; background: white; z-index: 4000; display: none; overflow-y: auto; padding: 40px 20px; }
+        .modal-container { max-width: 800px; margin: 0 auto; }
+        .article-header { border-bottom: 1px solid #eee; padding-bottom: 20px; margin-bottom: 20px; }
+        .article-title { font-size: 42px; font-weight: 800; line-height: 1.1; }
+        .article-sub { font-size: 22px; color: var(--text-sub); margin-top: 15px; }
+        .article-content { font-size: 19px; line-height: 1.8; color: #333; }
+        .interaction-bar { display: flex; gap: 20px; padding: 20px 0; border-top: 1px solid #eee; margin-top: 30px; }
+        .int-btn { cursor: pointer; font-weight: 700; font-size: 14px; color: var(--text-sub); display: flex; align-items: center; gap: 5px; }
+
+        /* TOAST */
+        #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 12px 25px; border-radius: 30px; display: none; z-index: 5000; font-weight: 600; }
     </style>
 </head>
 <body>
 
-    <div id="toast">Sucesso!</div>
+    <div id="toast">Ação concluída!</div>
     <div class="menu-overlay" id="overlay" onclick="toggleMenu()"></div>
 
     <div id="side-menu">
-        <h2 style="color:var(--g1-red); margin-bottom:20px;">Menu</h2>
-        <div class="menu-item" onclick="showSec('home')">Home</div>
-        <div class="menu-item" onclick="showSec('admin')">Painel Admin</div>
+        <div style="font-size: 24px; font-weight: 800; color: var(--g1-red); margin-bottom: 30px;">g1 Brookasil</div>
+        <div class="menu-item" onclick="navigate('home')">Home</div>
+        <div class="menu-item" onclick="navigate('admin')">Painel Administrativo</div>
         <div class="menu-item" onclick="window.open('https://tsedoroblox2025.github.io/candidatura-cde/')">Candidatura CDE</div>
         <div class="menu-item" onclick="window.open('https://tsedoroblox2025.github.io/filia-o.html/')">Filiação Partidária</div>
+        <div class="menu-item" onclick="navigate('divulgar')">Divulgar Trabalho</div>
     </div>
 
     <header>
-        <div style="display:flex; align-items:center; gap:15px;">
-            <div style="font-size:25px; cursor:pointer;" onclick="toggleMenu()">☰</div>
-            <div class="logo" onclick="location.reload()">g1<span>Brookasil</span></div>
+        <div class="header-left">
+            <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+            <a class="logo" onclick="location.reload()">g1<span>Brookasil</span></a>
         </div>
-        <div class="user-pill" onclick="showSec('conta')">
-            <img id="nav-foto" src="https://via.placeholder.com/30">
-            <span id="nav-nome">Minha Conta</span>
+        <div class="user-area" onclick="navigate('conta')">
+            <img id="nav-pfp" src="https://via.placeholder.com/50">
+            <span id="nav-user">Minha Conta</span>
         </div>
     </header>
 
-    <div class="info-bar">
-        <span style="color:red">● AO VIVO</span>
-        <span id="clima-txt">🌤️ CARREGANDO...</span>
-        <span id="relogio">00:00:00</span>
+    <div class="sub-bar">
+        <span><span class="live-dot"></span>AO VIVO</span>
+        <span id="clima-display">☀️ ENSOLARADO: 28°C</span>
+        <span id="relogio-display">00:00:00</span>
     </div>
+
+    <nav class="filter-nav">
+        <button class="active" onclick="setFilter('Todas', this)">Todas</button>
+        <button onclick="setFilter('Política', this)">Política</button>
+        <button onclick="setFilter('Polícia', this)">Polícia</button>
+        <button onclick="setFilter('Educação', this)">Educação</button>
+        <button onclick="setFilter('Esporte', this)">Esporte</button>
+        <button onclick="setFilter('Entretenimento', this)">Entretenimento</button>
+        <button onclick="setFilter('Curiosidades', this)">Curiosidades</button>
+    </nav>
 
     <div class="container">
-        
-        <section id="sec-home" class="section active">
-            <div id="feed" class="news-grid">
-                <p style="text-align:center; grid-column: 1/-1;">Carregando notícias em tempo real...</p>
-            </div>
-        </section>
-
-        <section id="sec-conta" class="section">
-            <div class="box">
-                <h2>👤 Perfil do Cidadão</h2>
-                <input type="text" id="user-nome" placeholder="Nome no RP">
-                <textarea id="user-bio" placeholder="Biografia"></textarea>
-                <label>Foto de Perfil:</label>
-                <input type="file" id="user-file" accept="image/*" onchange="encodeImg(this, 'prev-user')">
-                <center><img id="prev-user" style="width:100px; height:100px; border-radius:50%; object-fit:cover; display:none; margin:10px;"></center>
-                <button class="btn" onclick="saveUser()">Salvar Perfil</button>
-            </div>
-        </section>
-
-        <section id="sec-admin" class="section">
-            <div class="box">
-                <h2>🔐 Painel de Controle</h2>
-                <div id="auth-area">
-                    <input type="password" id="pass" placeholder="Senha Administrativa">
-                    <button class="btn" onclick="login()">Entrar</button>
+        <main class="main-content">
+            
+            <section id="sec-home" class="section active">
+                <div id="destaque-area"></div>
+                <div id="news-feed">
+                    <p style="padding: 40px; text-align: center; color: #999;">Conectando ao banco de dados...</p>
                 </div>
+            </section>
 
-                <div id="admin-area" style="display:none;">
-                    <div id="dono-area" style="display:none; background:#fff5f5; padding:15px; margin-bottom:20px;">
-                        <h4>👑 Controles de Dono</h4>
-                        <input type="text" id="in-clima" placeholder="Ex: ⛈️ TEMPESTADE: 18°C">
-                        <button class="btn" style="background:#333" onclick="updateClima()">Atualizar Clima</button>
-                        <hr style="margin:15px 0;">
-                        <input type="text" id="in-autor" placeholder="Novo nome de Autor">
-                        <button class="btn" style="background:#333" onclick="addAutor()">Cadastrar Autor</button>
+            <section id="sec-conta" class="section">
+                <div class="box">
+                    <h2>Meu Perfil</h2>
+                    <input type="text" id="acc-nome" placeholder="Nome Completo">
+                    <textarea id="acc-bio" placeholder="Sua biografia..."></textarea>
+                    <label>Sua Foto:</label>
+                    <input type="file" accept="image/*" onchange="processImage(this, 'acc-preview')">
+                    <center><img id="acc-preview" style="width:120px; height:120px; border-radius:50%; object-fit:cover; display:none; margin:15px; border:3px solid var(--g1-red);"></center>
+                    <button class="btn" onclick="saveAccount()">Criar / Atualizar Conta</button>
+                </div>
+            </section>
+
+            <section id="sec-admin" class="section">
+                <div class="box">
+                    <h2>Acesso Administrativo</h2>
+                    <div id="admin-login">
+                        <input type="password" id="admin-pass" placeholder="Senha do Painel">
+                        <button class="btn" onclick="tryAdmin()">Entrar no Painel</button>
                     </div>
 
-                    <h3>✍️ Nova Reportagem</h3>
-                    <input type="text" id="n-tit" placeholder="Título">
-                    <input type="text" id="n-sub" placeholder="Subtítulo">
-                    <label>Selecione o Autor:</label>
-                    <select id="n-aut">
+                    <div id="admin-panel" style="display:none;">
+                        <div id="dono-only" style="display:none; background: #fffafa; padding: 20px; border: 1px solid #ffebeb; margin-bottom: 25px;">
+                            <h3 style="color:var(--g1-red); margin-bottom:15px;">👑 Painel do Dono</h3>
+                            <label>Clima e Temperatura:</label>
+                            <input type="text" id="cfg-clima" placeholder="Ex: ⛈️ TEMPESTADE: 22°C">
+                            <button class="btn" style="background:#333" onclick="saveClima()">Atualizar Topo</button>
+                            <hr style="margin:20px 0;">
+                            <label>Novo Jornalista:</label>
+                            <input type="text" id="cfg-jornalista" placeholder="Nome do Jornalista">
+                            <button class="btn" style="background:#333" onclick="addJornalista()">Autorizar Jornalista</button>
+                        </div>
+
+                        <h3>✍️ Publicar Notícia</h3>
+                        <input type="text" id="n-titulo" placeholder="Título chamativo">
+                        <input type="text" id="n-sub" placeholder="Subtítulo ou resumo">
+                        <select id="n-tema">
+                            <option>Política</option><option>Polícia</option><option>Educação</option>
+                            <option>Esporte</option><option>Entretenimento</option><option>Curiosidades</option>
                         </select>
-                    <select id="n-cat">
-                        <option>Política</option><option>Policial</option><option>Cidades</option><option>Saúde</option>
-                    </select>
-                    <textarea id="n-txt" rows="8" placeholder="Texto da notícia..."></textarea>
-                    <input type="file" accept="image/*" onchange="encodeImg(this, 'prev-n')">
-                    <img id="prev-n" style="width:100%; display:none; margin-bottom:15px;">
-                    <button class="btn" onclick="publish()">Publicar no g1</button>
+                        <select id="n-autor">
+                            </select>
+                        <textarea id="n-texto" rows="10" placeholder="Escreva a notícia completa aqui..."></textarea>
+                        <label>Foto da Notícia (Galeria):</label>
+                        <input type="file" accept="image/*" onchange="processImage(this, 'n-preview')">
+                        <img id="n-preview" style="width:100%; border-radius:4px; display:none; margin-bottom:15px;">
+                        <button class="btn" onclick="publishNews()">Publicar agora no g1</button>
+                        
+                        <div id="admin-list" style="margin-top:40px;">
+                            <h4>Gerenciar Postagens</h4>
+                            <div id="admin-news-items"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="sec-divulgar" class="section">
+                <div class="box">
+                    <h2>Divulgar Trabalho</h2>
+                    <p>Para anunciar sua empresa, serviço ou evento aqui no g1, você precisa entrar em contato com a nossa central de publicidade.</p><br>
+                    <p><strong>Requisitos:</strong><br>- Possuir conta no portal<br>- Ter autorização prévia do Dono</p><br>
+                    <button class="btn" disabled style="opacity:0.5">Solicitar Autorização (Em breve)</button>
+                </div>
+            </section>
+        </main>
+
+        <aside class="sidebar">
+            <div class="box" style="border-top: 3px solid var(--g1-red);">
+                <h4 style="margin-bottom:15px;">MAIS LIDAS</h4>
+                <div id="mais-lidas">
+                    <p style="font-size:13px; color:#999;">Carregando tendências...</p>
                 </div>
             </div>
-        </section>
-
+        </aside>
     </div>
 
-    <div id="modal-noticia">
-        <div class="modal-body">
-            <button class="btn" style="width:auto; background:#666" onclick="closeModal()">← Voltar</button>
+    <div id="modal-view">
+        <div class="modal-container">
+            <button class="btn" style="width:auto; background:#666; margin-bottom:30px;" onclick="closeModal()">← VOLTAR</button>
             <div id="modal-content"></div>
-            <hr style="margin:20px 0;">
-            <h3>💬 Comentários</h3>
-            <div id="comments"></div>
-            <div style="margin-top:20px;">
-                <input type="text" id="c-txt" placeholder="Escreva um comentário...">
-                <button class="btn" style="width:100px" onclick="postComment()">Enviar</button>
+            
+            <div class="interaction-bar">
+                <div class="int-btn" onclick="interact('likes')">👍 <span id="count-likes">0</span></div>
+                <div class="int-btn" onclick="interact('unlikes')">👎 <span id="count-unlikes">0</span></div>
+                <div class="int-btn" onclick="interact('reposts')">🔁 <span id="count-reposts">0</span></div>
+            </div>
+
+            <div class="box" style="margin-top:30px; background:#f9f9f9;">
+                <h4>Comentários</h4>
+                <div id="comment-list" style="margin:20px 0;"></div>
+                <div style="display:flex; gap:10px;">
+                    <input type="text" id="in-comment" placeholder="O que você acha disso?" style="margin:0;">
+                    <button class="btn" style="width:100px;" onclick="addComment()">Postar</button>
+                </div>
             </div>
         </div>
     </div>
@@ -167,178 +294,314 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
     <script>
-        // CONFIGURAÇÃO FIREBASE
+        // --- CONFIGURAÇÃO FIREBASE ---
         const firebaseConfig = { databaseURL: "https://g1-brookasil-default-rtdb.firebaseio.com/" };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        let currentImg = "";
-        let activePost = "";
+        // --- VARIÁVEIS DE ESTADO ---
+        let currentImgData = "";
+        let currentFilter = "Todas";
+        let activePostId = null;
+        let isAdmin = false;
+        let isDono = false;
 
-        // FUNÇÕES DE IMAGEM
-        function encodeImg(input, target) {
-            const reader = new FileReader();
-            reader.onload = e => {
-                currentImg = e.target.result;
-                document.getElementById(target).src = e.target.result;
-                document.getElementById(target).style.display = 'block';
-            };
-            reader.readAsDataURL(input.files[0]);
-        }
+        const autoresIniciais = ["Charles Roitman", "Tutu Protásio", "Anderson Roitman", "Drinho Oliver", "Arthur Monteiro", "Popó Cardoso", "Davi Zavarisi"];
 
-        // NAVEGAÇÃO
+        // --- UTILITÁRIOS ---
         function toggleMenu() {
-            document.getElementById('side-menu').classList.toggle('active');
-            document.getElementById('overlay').style.display = document.getElementById('overlay').style.display === 'block' ? 'none' : 'block';
+            document.getElementById('side-menu').classList.toggle('open');
+            const ov = document.getElementById('overlay');
+            ov.style.display = ov.style.display === 'block' ? 'none' : 'block';
         }
 
-        function showSec(id) {
+        function navigate(id) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.getElementById('sec-' + id).classList.add('active');
-            if(id !== 'admin') toggleMenu();
+            if(id === 'home') renderFeed();
+            if(document.getElementById('side-menu').classList.contains('open')) toggleMenu();
+            window.scrollTo(0,0);
         }
 
-        // PERFIL
-        function saveUser() {
-            const user = { nome: document.getElementById('user-nome').value, bio: document.getElementById('user-bio').value, foto: currentImg };
-            localStorage.setItem('g1_user', JSON.stringify(user));
-            toast("Perfil Salvo!");
-            setTimeout(() => location.reload(), 1000);
+        function toast(msg) {
+            const t = document.getElementById('toast');
+            t.innerText = msg; t.style.display = 'block';
+            setTimeout(() => t.style.display = 'none', 3000);
         }
 
-        // ADMIN
-        function login() {
-            const p = document.getElementById('pass').value;
-            if(p === "Brookasil1234" || p === "G1_Brookasil") {
-                document.getElementById('auth-area').style.display = 'none';
-                document.getElementById('admin-area').style.display = 'block';
-                if(p === "Brookasil1234") document.getElementById('dono-area').style.display = 'block';
-            } else alert("Senha incorreta!");
-        }
-
-        function updateClima() {
-            db.ref('clima').set(document.getElementById('in-clima').value);
-            toast("Clima atualizado!");
-        }
-
-        function addAutor() {
-            const nome = document.getElementById('in-autor').value;
-            if(nome) db.ref('autores').push(nome).then(() => {
-                document.getElementById('in-autor').value = "";
-                toast("Autor adicionado!");
-            });
-        }
-
-        function publish() {
-            const data = {
-                titulo: document.getElementById('n-tit').value,
-                sub: document.getElementById('n-sub').value,
-                autor: document.getElementById('n-aut').value,
-                cat: document.getElementById('n-cat').value,
-                texto: document.getElementById('n-txt').value,
-                foto: currentImg,
-                data: new Date().toLocaleString(),
-                ts: Date.now()
+        function processImage(input, previewId) {
+            const reader = new FileReader();
+            reader.onload = e => {
+                currentImgData = e.target.result;
+                const prev = document.getElementById(previewId);
+                prev.src = e.target.result;
+                prev.style.display = 'block';
             };
-            db.ref('posts').push(data).then(() => {
-                toast("Publicado!");
-                location.reload();
-            });
+            if(input.files[0]) reader.readAsDataURL(input.files[0]);
         }
 
-        // CARREGAMENTO REALTIME
-        function init() {
-            // Clima
-            db.ref('clima').on('value', s => { document.getElementById('clima-txt').innerText = s.val() || "🌤️ ENSOLARADO: 25°C"; });
+        // --- SISTEMA DE CONTAS ---
+        function saveAccount() {
+            const nome = document.getElementById('acc-nome').value;
+            const bio = document.getElementById('acc-bio').value;
+            if(!nome) return alert("Digite seu nome!");
+            const user = { nome, bio, foto: currentImgData || "https://via.placeholder.com/50", role: 'user' };
+            localStorage.setItem('g1_session', JSON.stringify(user));
+            db.ref('users/' + nome.replace(/\s/g, '_')).set(user);
+            toast("Perfil atualizado!");
+            updateUserUI();
+        }
 
-            // Autores (Lista Dinâmica)
-            db.ref('autores').on('value', s => {
-                const sel = document.getElementById('n-aut');
-                sel.innerHTML = "";
-                // Autores Padrão
-                const padrao = ["Charles Roitman", "Tutu Protásio", "Anderson Roitman", "Drinho Oliver", "Arthur Monteiro", "Popó Cardoso", "Davi Zavarisi"];
-                padrao.forEach(a => sel.innerHTML += `<option>${a}</option>`);
-                // Autores do Banco
-                s.forEach(c => { sel.innerHTML += `<option>${c.val()}</option>`; });
-            });
-
-            // Feed de Notícias
-            db.ref('posts').orderByChild('ts').on('value', snap => {
-                const feed = document.getElementById('feed');
-                feed.innerHTML = "";
-                let posts = [];
-                snap.forEach(c => { posts.push({id: c.key, ...c.val()}); });
-                posts.reverse().forEach(p => {
-                    feed.innerHTML += `
-                        <div class="card" onclick="openPost('${p.id}')">
-                            <img src="${p.foto}">
-                            <div class="card-body">
-                                <span class="card-cat">${p.cat}</span>
-                                <h2 class="card-title">${p.titulo}</h2>
-                                <p style="color:#666; font-size:14px;">${p.sub}</p>
-                            </div>
-                        </div>`;
-                });
-            });
-
-            // Relógio
-            setInterval(() => { document.getElementById('relogio').innerText = new Date().toLocaleTimeString(); }, 1000);
-
-            // Carregar User Local
-            const u = JSON.parse(localStorage.getItem('g1_user'));
-            if(u) {
-                document.getElementById('nav-nome').innerText = u.nome;
-                if(u.foto) document.getElementById('nav-foto').src = u.foto;
+        function updateUserUI() {
+            const session = JSON.parse(localStorage.getItem('g1_session'));
+            if(session) {
+                document.getElementById('nav-user').innerText = session.nome;
+                document.getElementById('nav-pfp').src = session.foto;
+                document.getElementById('acc-nome').value = session.nome;
+                document.getElementById('acc-bio').value = session.bio;
+                if(session.foto) {
+                    document.getElementById('acc-preview').src = session.foto;
+                    document.getElementById('acc-preview').style.display = 'block';
+                }
             }
         }
 
-        function openPost(id) {
-            activePost = id;
-            db.ref('posts/'+id).once('value', s => {
-                const p = s.val();
-                document.getElementById('modal-content').innerHTML = `
-                    <span class="card-cat">${p.cat}</span>
-                    <h1 style="font-size:35px; margin:15px 0;">${p.titulo}</h1>
-                    <p style="font-size:20px; color:#555;">${p.sub}</p>
-                    <hr style="margin:15px 0;">
-                    <small>Por <b>${p.autor}</b> — ${p.data}</small>
-                    <img src="${p.foto}" class="modal-img">
-                    <div style="font-size:18px; line-height:1.8;">${p.texto.replace(/\n/g, '<br><br>')}</div>
-                `;
-                document.getElementById('modal-noticia').style.display = 'block';
-                loadComments(id);
+        // --- PAINEL ADMINISTRATIVO ---
+        function tryAdmin() {
+            const pass = document.getElementById('admin-pass').value;
+            if(pass === "Brookasil1234") { isDono = true; isAdmin = true; }
+            else if(pass === "G1_Brookasil") { isDono = false; isAdmin = true; }
+            else return alert("Senha incorreta!");
+
+            document.getElementById('admin-login').style.display = 'none';
+            document.getElementById('admin-panel').style.display = 'block';
+            if(isDono) document.getElementById('dono-only').style.display = 'block';
+            loadAutores();
+            renderAdminNews();
+        }
+
+        function loadAutores() {
+            db.ref('config/autores').on('value', s => {
+                const sel = document.getElementById('n-autor');
+                sel.innerHTML = "";
+                const list = [...autoresIniciais];
+                if(s.val()) Object.values(s.val()).forEach(a => list.push(a));
+                list.forEach(a => sel.innerHTML += `<option>${a}</option>`);
             });
         }
 
-        function closeModal() { document.getElementById('modal-noticia').style.display = 'none'; }
+        function addJornalista() {
+            const nome = document.getElementById('cfg-jornalista').value;
+            if(nome) db.ref('config/autores').push(nome).then(() => {
+                document.getElementById('cfg-jornalista').value = "";
+                toast("Jornalista autorizado!");
+            });
+        }
 
-        function postComment() {
-            const u = JSON.parse(localStorage.getItem('g1_user'));
-            if(!u) return alert("Crie uma conta para comentar!");
-            const txt = document.getElementById('c-txt').value;
-            if(txt) db.ref('comments/'+activePost).push({ nome: u.nome, txt, foto: u.foto }).then(() => {
-                document.getElementById('c-txt').value = "";
+        function saveClima() {
+            const val = document.getElementById('cfg-clima').value;
+            if(val) db.ref('config/clima').set(val).then(() => toast("Topo atualizado!"));
+        }
+
+        // --- NOTÍCIAS (CORE) ---
+        function publishNews() {
+            const title = document.getElementById('n-titulo').value;
+            const sub = document.getElementById('n-sub').value;
+            const text = document.getElementById('n-texto').value;
+            const cat = document.getElementById('n-tema').value;
+            const autor = document.getElementById('n-autor').value;
+
+            if(!title || !text || !currentImgData) return alert("Preencha título, texto e imagem!");
+
+            const post = {
+                title, sub, text, cat, autor,
+                img: currentImgData,
+                date: new Date().toLocaleString('pt-BR'),
+                timestamp: Date.now(),
+                stats: { likes: 0, unlikes: 0, reposts: 0 }
+            };
+
+            db.ref('posts').push(post).then(() => {
+                toast("Notícia publicada com sucesso!");
+                navigate('home');
+                // Limpar campos
+                document.getElementById('n-titulo').value = "";
+                document.getElementById('n-texto').value = "";
+                document.getElementById('n-preview').style.display = 'none';
+                currentImgData = "";
+            });
+        }
+
+        function setFilter(cat, btn) {
+            currentFilter = cat;
+            document.querySelectorAll('.filter-nav button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderFeed();
+        }
+
+        function renderFeed() {
+            db.ref('posts').orderByChild('timestamp').on('value', snap => {
+                const feed = document.getElementById('news-feed');
+                const destaque = document.getElementById('destaque-area');
+                feed.innerHTML = "";
+                destaque.innerHTML = "";
+
+                let posts = [];
+                snap.forEach(child => {
+                    const p = child.val();
+                    p.id = child.key;
+                    if(currentFilter === "Todas" || p.cat === currentFilter) posts.push(p);
+                });
+                posts.reverse();
+
+                if(posts.length === 0) {
+                    feed.innerHTML = `<div style="text-align:center; padding:50px;">Nenhuma notícia encontrada em ${currentFilter}.</div>`;
+                    return;
+                }
+
+                posts.forEach((p, idx) => {
+                    const html = `
+                        <div class="news-card ${idx === 0 && currentFilter === 'Todas' ? 'featured-card' : ''}" onclick="openNews('${p.id}')">
+                            <img src="${p.img}" class="news-img">
+                            <div class="news-body">
+                                <span class="news-cat">${p.cat}</span>
+                                <h2 class="news-title">${p.title}</h2>
+                                <p class="news-sub">${p.sub}</p>
+                                <div class="news-meta">Por ${p.autor} • ${p.date}</div>
+                            </div>
+                        </div>`;
+                    
+                    if(idx === 0 && currentFilter === "Todas") destaque.innerHTML = html;
+                    else feed.innerHTML += html;
+                });
+                renderSidebar(posts);
+            });
+        }
+
+        function renderSidebar(posts) {
+            const list = document.getElementById('mais-lidas');
+            list.innerHTML = "";
+            posts.slice(0, 5).forEach((p, i) => {
+                list.innerHTML += `<div onclick="openNews('${p.id}')" style="margin-bottom:15px; cursor:pointer;">
+                    <span style="color:#ccc; font-size:24px; font-weight:800; float:left; margin-right:10px;">${i+1}</span>
+                    <p style="font-weight:700; font-size:14px; line-height:1.2;">${p.title}</p>
+                </div><div style="clear:both;"></div>`;
+            });
+        }
+
+        // --- VISUALIZAÇÃO E INTERAÇÃO ---
+        function openNews(id) {
+            activePostId = id;
+            db.ref('posts/'+id).once('value', s => {
+                const p = s.val();
+                document.getElementById('modal-content').innerHTML = `
+                    <div class="article-header">
+                        <span class="news-cat">${p.cat}</span>
+                        <h1 class="article-title">${p.title}</h1>
+                        <p class="article-sub">${p.sub}</p>
+                        <div class="news-meta" style="margin-top:20px;">Por <strong>${p.autor}</strong>, g1 Brookasil — Brookasil</div>
+                        <div class="news-meta">${p.date}</div>
+                    </div>
+                    <img src="${p.img}" style="width:100%; border-radius:4px; margin-bottom:30px;">
+                    <div class="article-content">${p.text.replace(/\n/g, '<br><br>')}</div>
+                `;
+                
+                // Atualizar Stats
+                document.getElementById('count-likes').innerText = p.stats?.likes || 0;
+                document.getElementById('count-unlikes').innerText = p.stats?.unlikes || 0;
+                document.getElementById('count-reposts').innerText = p.stats?.reposts || 0;
+
+                loadComments(id);
+                document.getElementById('modal-view').style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            });
+        }
+
+        function closeModal() {
+            document.getElementById('modal-view').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        function interact(type) {
+            db.ref(`posts/${activePostId}/stats/${type}`).transaction(current => (current || 0) + 1);
+            db.ref(`posts/${activePostId}/stats/${type}`).once('value', s => {
+                document.getElementById('count-'+type).innerText = s.val();
+            });
+            toast("Obrigado pela interação!");
+        }
+
+        function addComment() {
+            const session = JSON.parse(localStorage.getItem('g1_session'));
+            const text = document.getElementById('in-comment').value;
+            if(!session) return alert("Faça login para comentar!");
+            if(!text) return;
+
+            const comm = {
+                user: session.nome,
+                foto: session.foto,
+                text: text,
+                ts: Date.now()
+            };
+
+            db.ref(`comments/${activePostId}`).push(comm).then(() => {
+                document.getElementById('in-comment').value = "";
             });
         }
 
         function loadComments(id) {
-            db.ref('comments/'+id).on('value', s => {
-                const box = document.getElementById('comments');
-                box.innerHTML = "";
+            db.ref(`comments/${id}`).on('value', s => {
+                const list = document.getElementById('comment-list');
+                list.innerHTML = "";
                 s.forEach(c => {
                     const d = c.val();
-                    box.innerHTML += `<div style="margin-bottom:10px;"><b>${d.nome}:</b> ${d.txt}</div>`;
+                    list.innerHTML += `
+                        <div style="display:flex; gap:10px; margin-bottom:15px; border-bottom:1px solid #eee; padding-bottom:10px;">
+                            <img src="${d.foto}" style="width:35px; height:35px; border-radius:50%;">
+                            <div>
+                                <div style="font-weight:800; font-size:12px; color:var(--g1-red);">${d.user}</div>
+                                <div style="font-size:14px;">${d.text}</div>
+                            </div>
+                        </div>`;
                 });
             });
         }
 
-        function toast(m) {
-            const t = document.getElementById('toast');
-            t.innerText = m; t.style.display = 'block';
-            setTimeout(() => t.style.display = 'none', 3000);
+        function renderAdminNews() {
+            db.ref('posts').on('value', snap => {
+                const list = document.getElementById('admin-news-items');
+                list.innerHTML = "";
+                snap.forEach(c => {
+                    const p = c.val();
+                    list.innerHTML += `
+                        <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; border-bottom:1px solid #eee;">
+                            <span style="font-size:12px;">${p.title.substring(0, 40)}...</span>
+                            <button class="btn btn-delete" onclick="deletePost('${c.key}')">EXCLUIR</button>
+                        </div>`;
+                });
+            });
         }
 
-        init();
+        function deletePost(id) {
+            if(confirm("Tem certeza que deseja apagar esta notícia permanentemente?")) {
+                db.ref('posts/'+id).remove().then(() => toast("Notícia removida!"));
+            }
+        }
+
+        // --- RELÓGIO E CLIMA ---
+        function initGlobal() {
+            setInterval(() => {
+                document.getElementById('relogio-display').innerText = new Date().toLocaleTimeString('pt-BR');
+            }, 1000);
+
+            db.ref('config/clima').on('value', s => {
+                document.getElementById('clima-display').innerText = s.val() || "☀️ ENSOLARADO: 28°C";
+            });
+
+            updateUserUI();
+            renderFeed();
+        }
+
+        initGlobal();
     </script>
 </body>
 </html>
