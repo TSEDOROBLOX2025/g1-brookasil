@@ -3,334 +3,553 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>g1 - Brookasil Oficial</title>
+    <title>g1 - Brookasil</title>
     <style>
-        :root { 
-            --g1-red: #C4170C; 
-            --g1-bg: #f6f6f6; 
-            --text-main: #333;
+        /* CONFIGURAÇÕES GLOBAIS - ESTILO g1 */
+        :root {
+            --g1-red: #C4170C;
+            --g1-dark-red: #a3130a;
+            --bg-gray: #f6f6f6;
+            --text-black: #111;
+            --text-gray: #666;
             --border: #ddd;
         }
-        
-        body { font-family: "Open Sans", Arial, sans-serif; margin: 0; background-color: var(--g1-bg); color: var(--text-main); }
-        
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Open Sans', Arial, sans-serif; }
+        body { background-color: var(--bg-gray); color: var(--text-black); overflow-x: hidden; }
+
         /* HEADER */
-        header { background-color: var(--g1-red); color: white; padding: 0 20px; display: flex; align-items: center; position: sticky; top: 0; z-index: 1000; height: 65px; justify-content: space-between; }
-        .logo { font-weight: 900; font-size: 34px; letter-spacing: -2px; cursor: pointer; color: white; text-decoration: none; }
+        header {
+            background: var(--g1-red);
+            color: white;
+            height: 65px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-left { display: flex; align-items: center; gap: 15px; }
+        .menu-icon { font-size: 30px; cursor: pointer; user-select: none; }
+        .logo { font-weight: 900; font-size: 32px; letter-spacing: -2px; cursor: pointer; }
         .logo span { font-weight: 400; font-size: 18px; letter-spacing: 0; margin-left: 5px; opacity: 0.8; }
-        
-        .user-pill { background: rgba(0,0,0,0.2); padding: 5px 12px; border-radius: 20px; font-size: 13px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px; }
-        .user-avatar { width: 25px; height: 25px; border-radius: 50%; object-fit: cover; background: white; }
 
-        /* NAVEGAÇÃO CATEGORIAS */
-        .sub-nav { background: white; border-bottom: 1px solid #e0e0e0; display: flex; justify-content: center; overflow-x: auto; position: sticky; top: 65px; z-index: 999; }
-        .sub-nav a { color: var(--g1-red); text-decoration: none; padding: 15px; font-size: 12px; font-weight: 800; text-transform: uppercase; cursor: pointer; border-bottom: 3px solid transparent; }
-        .sub-nav a:hover, .sub-nav a.active { border-bottom: 3px solid var(--g1-red); }
+        .user-pill { 
+            background: rgba(0,0,0,0.2); 
+            padding: 6px 15px; 
+            border-radius: 20px; 
+            font-size: 13px; 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            gap: 8px;
+        }
+        .user-pill img { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; background: #fff; }
 
-        .container { max-width: 1100px; margin: 20px auto; padding: 0 20px; min-height: 80vh; }
+        /* BARRA DE CLIMA E HORA */
+        .info-bar {
+            background: white;
+            border-bottom: 1px solid var(--border);
+            padding: 8px 20px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            color: var(--text-gray);
+        }
+        .live-tag { color: var(--g1-red); font-weight: 900; }
+
+        /* MENU LATERAL */
+        #side-menu {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 300px;
+            height: 100%;
+            background: white;
+            box-shadow: 5px 0 15px rgba(0,0,0,0.1);
+            z-index: 2000;
+            transition: 0.3s;
+            padding: 20px;
+        }
+        #side-menu.active { left: 0; }
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            z-index: 1999;
+        }
+        .menu-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            color: var(--g1-red);
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-size: 14px;
+        }
+        .menu-item:hover { background: #f9f9f9; }
+
+        /* CONTEÚDO PRINCIPAL */
+        .container { max-width: 1100px; margin: 20px auto; padding: 0 15px; }
         .section { display: none; }
         .section.active { display: block; }
 
-        /* CARDS */
+        /* CARDS DE NOTÍCIAS */
         .news-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
-        .card { background: white; border-bottom: 1px solid #ddd; cursor: pointer; }
-        .card-img { width: 100%; height: 180px; object-fit: cover; }
-        .card-body { padding: 15px; }
+        .card { background: white; border-bottom: 1px solid var(--border); cursor: pointer; transition: 0.2s; }
+        .card:hover { opacity: 0.8; }
+        .card img { width: 100%; height: 180px; object-fit: cover; }
+        .card-content { padding: 15px; }
         .card-category { color: var(--g1-red); font-size: 11px; font-weight: 800; text-transform: uppercase; }
-        .card-title { font-size: 20px; font-weight: 800; line-height: 1.2; margin: 10px 0; }
+        .card-title { font-size: 20px; font-weight: 800; line-height: 1.2; margin: 8px 0; }
+        .card-time { font-size: 11px; color: #999; }
 
-        /* PERFIL */
-        .profile-card { background: white; padding: 30px; border-radius: 8px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .avatar-edit { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 4px solid var(--g1-red); margin-bottom: 15px; }
+        /* FORMULÁRIOS E PAINÉIS */
+        .box { background: white; padding: 25px; border-radius: 4px; border: 1px solid var(--border); margin-bottom: 20px; }
+        h2 { margin-bottom: 20px; color: var(--g1-red); border-bottom: 2px solid var(--g1-red); display: inline-block; }
+        input, textarea, select { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; }
+        .btn { background: var(--g1-red); color: white; border: none; padding: 12px 20px; border-radius: 4px; font-weight: bold; cursor: pointer; width: 100%; text-transform: uppercase; }
+        .btn:hover { background: var(--g1-dark-red); }
+        .btn-secondary { background: #666; margin-top: 10px; }
 
-        /* FORMULÁRIOS */
-        .box { background: white; padding: 25px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 20px; }
-        input, textarea, select { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; font-size: 15px; box-sizing: border-box; }
-        .btn { background: var(--g1-red); color: white; border: none; padding: 12px 20px; border-radius: 4px; font-weight: 800; cursor: pointer; width: 100%; transition: 0.2s; }
-        .btn-outline { background: none; border: 1px solid var(--border); color: #666; width: auto; font-size: 12px; margin-right: 5px; }
+        /* MODAL DE NOTÍCIA */
+        #modal-noticia {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            z-index: 3000;
+            display: none;
+            overflow-y: auto;
+            padding: 40px 20px;
+        }
+        .modal-body { max-width: 800px; margin: 0 auto; }
+        .modal-body h1 { font-size: 40px; font-weight: 800; margin-bottom: 10px; }
+        .modal-body p.subtitle { font-size: 20px; color: #666; margin-bottom: 20px; }
+        .modal-body img { width: 100%; border-radius: 8px; margin-bottom: 20px; }
 
-        /* MODAL */
-        #news-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 5000; overflow-y: auto; }
-        .modal-content { max-width: 800px; margin: 0 auto; padding: 40px 20px; }
-        
-        #toast { display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 12px 25px; border-radius: 30px; z-index: 6000; font-weight: bold; }
+        /* INTERAÇÃO */
+        .actions { display: flex; gap: 15px; margin: 20px 0; padding: 15px 0; border-top: 1px solid #eee; border-bottom: 1px solid #eee; }
+        .action-btn { cursor: pointer; font-size: 14px; font-weight: bold; color: var(--text-gray); display: flex; align-items: center; gap: 5px; }
+        .comments-section { background: #f9f9f9; padding: 20px; margin-top: 20px; border-radius: 8px; }
+        .comment { margin-bottom: 15px; border-bottom: 1px dotted #ccc; padding-bottom: 5px; }
+        .comment b { color: var(--g1-red); font-size: 13px; }
+
+        /* RESPONSIVIDADE */
+        @media (max-width: 600px) {
+            .news-grid { grid-template-columns: 1fr; }
+            .modal-body h1 { font-size: 28px; }
+        }
     </style>
 </head>
 <body>
 
-    <div id="toast">Sucesso!</div>
+    <div class="menu-overlay" id="menu-overlay" onclick="toggleMenu()"></div>
+
+    <div id="side-menu">
+        <h3 style="color:var(--g1-red); margin-bottom:20px;">g1 Brookasil</h3>
+        <div class="menu-item" onclick="showSection('home')">Home</div>
+        <div class="menu-item" onclick="showSection('divulgar')">Divulgar Trabalho</div>
+        <div class="menu-item" onclick="showSection('candidatura')">Candidatura CDE</div>
+        <div class="menu-item" onclick="showSection('filiacao')">Filiação</div>
+        <div class="menu-item" onclick="showSection('admin')">Painel Administrativo</div>
+    </div>
 
     <header>
-        <div style="display:flex; align-items:center;">
-            <span style="font-size:24px; margin-right:15px; cursor:pointer;" onclick="irPara('admin')">☰</span>
-            <a class="logo" onclick="location.reload()">g1 <span>Brookasil</span></a>
+        <div class="header-left">
+            <div class="menu-icon" onclick="toggleMenu()">☰</div>
+            <div class="logo" onclick="showSection('home')">g1<span>Brookasil</span></div>
         </div>
-        <div class="user-pill" onclick="irPara('conta')">
-            <img id="nav-avatar" class="user-avatar" src="https://via.placeholder.com/50">
-            <span id="display-nome">Entrar</span>
+        <div class="user-pill" id="user-pill" onclick="showSection('conta')">
+            <img id="user-pill-img" src="https://via.placeholder.com/30">
+            <span id="user-pill-name">Criar Conta</span>
         </div>
     </header>
 
-    <div class="sub-nav">
-        <a onclick="filtrar('Tudo')" class="active">Tudo</a>
-        <a onclick="filtrar('Política')">Política</a>
-        <a onclick="filtrar('Policial')">Policial</a>
-        <a onclick="filtrar('Saúde')">Saúde</a>
-        <a onclick="filtrar('Cidades')">Cidades</a>
+    <div class="info-bar">
+        <span class="live-tag">● AO VIVO</span>
+        <span id="txt-clima">🌤️ ENSOLARADO: 26°C</span>
+        <span id="txt-hora">00:00:00</span>
     </div>
 
     <div class="container">
-        <div id="sec-noticias" class="section active">
-            <div id="feed" class="news-grid"></div>
-        </div>
-
-        <div id="sec-conta" class="section">
-            <div class="profile-card">
-                <img id="edit-preview" class="avatar-edit" src="https://via.placeholder.com/150">
-                <h2>Meu Perfil</h2>
-                <div class="box">
-                    <label>Trocar Foto (Galeria):</label>
-                    <input type="file" accept="image/*" onchange="previewImage(this, 'edit-preview')">
-                    <input type="text" id="reg-nome" placeholder="Nome no RP">
-                    <textarea id="reg-bio" placeholder="Sua Biografia..."></textarea>
-                    <button class="btn" onclick="salvarPerfil()">Salvar Alterações</button>
+        
+        <section id="sec-home" class="section active">
+            <div class="news-grid" id="news-feed">
                 </div>
-            </div>
-        </div>
+        </section>
 
-        <div id="sec-admin" class="section">
+        <section id="sec-divulgar" class="section">
             <div class="box">
-                <h2>🔑 Painel Administrativo</h2>
-                <div id="admin-login">
+                <h2>Divulgar Trabalho</h2>
+                <p>Para anunciar sua empresa ou serviço no g1 Brookasil, você deve:</p><br>
+                <ul>
+                    <li>1. Possuir uma conta ativa no portal.</li>
+                    <li>2. Obter autorização oficial do Dono do Jornal.</li>
+                </ul>
+                <br>
+                <button class="btn btn-secondary" disabled>Solicitar Autorização (Bloqueado)</button>
+            </div>
+        </section>
+
+        <section id="sec-candidatura" class="section">
+            <div class="box">
+                <h2>Candidatura CDE</h2>
+                <p>O Conselho de Ética (CDE) está com vagas abertas. Siga o tutorial abaixo para se candidatar corretamente no sistema oficial.</p>
+                <br>
+                <button class="btn" onclick="window.open('https://tsedoroblox2025.github.io/candidatura-cde/')">Ir para Site de Candidatura</button>
+            </div>
+        </section>
+
+        <section id="sec-filiacao" class="section">
+            <div class="box">
+                <h2>Filiação Partidária</h2>
+                <p>Torne-se um membro oficial. O processo de filiação é simples e rápido através do nosso formulário externo.</p>
+                <br>
+                <button class="btn" onclick="window.open('https://tsedoroblox2025.github.io/filia-o.html/')">Acessar Formulário de Filiação</button>
+            </div>
+        </section>
+
+        <section id="sec-conta" class="section">
+            <div class="box" id="login-box">
+                <h2>Criar Conta / Login</h2>
+                <input type="text" id="reg-nome" placeholder="Seu nome completo">
+                <input type="password" id="reg-pass" placeholder="Crie uma senha">
+                <label>Foto de Perfil:</label>
+                <input type="file" id="reg-foto" accept="image/*">
+                <textarea id="reg-bio" placeholder="Sua biografia (opcional)"></textarea>
+                <button class="btn" onclick="criarConta()">Cadastrar no g1</button>
+            </div>
+            <div class="box" id="profile-box" style="display:none;">
+                <h2 id="prof-nome">Meu Perfil</h2>
+                <p id="prof-bio"></p>
+                <button class="btn btn-secondary" onclick="logout()">Sair da Conta</button>
+            </div>
+        </section>
+
+        <section id="sec-admin" class="section">
+            <div class="box">
+                <h2>Acesso Restrito</h2>
+                <div id="admin-auth">
                     <input type="password" id="admin-pass" placeholder="Senha do Painel">
-                    <button class="btn" onclick="acessarAdmin()">Acessar</button>
+                    <button class="btn" onclick="logarAdmin()">Acessar Painel</button>
                 </div>
-                
-                <div id="admin-tools" style="display:none">
-                    <div id="dono-tools" style="display:none">
-                        <h3>🌡️ Clima (Apenas Dono)</h3>
-                        <input type="text" id="clima-input" placeholder="Ex: ⛈️ Temporal: 18°C">
-                        <button class="btn" onclick="setClima()">Mudar Clima</button>
-                        <hr>
+
+                <div id="panel-jornalista" style="display:none;">
+                    <h3>Painel do Jornalista</h3>
+                    <p>Poste notícias no feed oficial.</p>
+                    <hr style="margin:15px 0;">
+                    <div id="post-form">
+                        <input type="text" id="n-titulo" placeholder="Título da Notícia">
+                        <input type="text" id="n-sub" placeholder="Subtítulo">
+                        <input type="text" id="n-autor" placeholder="Nome do Autor">
+                        <select id="n-tema">
+                            <option>Política</option>
+                            <option>Policial</option>
+                            <option>Cidades</option>
+                            <option>Esportes</option>
+                        </select>
+                        <textarea id="n-texto" rows="6" placeholder="Texto da notícia..."></textarea>
+                        <label>Foto da Notícia:</label>
+                        <input type="file" id="n-foto" accept="image/*">
+                        <button class="btn" onclick="postarNoticia()">Publicar Notícia</button>
                     </div>
+                </div>
 
-                    <h3>✍️ Postar Notícia</h3>
-                    <select id="n-tema">
-                        <option value="Política">Política</option>
-                        <option value="Policial">Policial</option>
-                        <option value="Saúde">Saúde</option>
-                        <option value="Cidades">Cidades</option>
-                    </select>
-                    <input type="text" id="n-tit" placeholder="Título da Notícia">
-                    <textarea id="n-txt" rows="6" placeholder="Texto da reportagem..."></textarea>
-                    <label>Foto da Notícia (Galeria):</label>
-                    <input type="file" accept="image/*" onchange="previewImage(this, 'n-img-prev')">
-                    <img id="n-img-prev" style="width:100%; display:none; margin:10px 0; border-radius:5px;">
-                    <button class="btn" onclick="postarNoticia()">Publicar Agora</button>
+                <div id="panel-dono" style="display:none;">
+                    <h3>Painel do Dono 👑</h3>
+                    <div class="box" style="border-color:var(--g1-red)">
+                        <h4>Gerenciar Clima</h4>
+                        <input type="text" id="set-clima" placeholder="Ex: ⛈️ TEMPESTADE">
+                        <input type="number" id="set-temp" placeholder="Temperatura (°C)">
+                        <button class="btn" onclick="atualizarClima()">Salvar Previsão</button>
+                    </div>
+                    <div id="admin-news-list">
+                        </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div id="modal-noticia">
+        <div class="modal-body">
+            <button class="btn btn-secondary" style="width:auto;" onclick="fecharNoticia()">← Voltar para Home</button>
+            <div id="full-news-content"></div>
+            
+            <div class="actions">
+                <span class="action-btn" onclick="interagir('like')">👍 Curtir (<span id="count-like">0</span>)</span>
+                <span class="action-btn" onclick="interagir('unlike')">👎 Não curtir</span>
+                <span class="action-btn" onclick="interagir('repost')">🔁 Republicar</span>
+            </div>
+
+            <div class="comments-section">
+                <h4>Comentários</h4>
+                <div id="list-comments"></div>
+                <div style="margin-top:15px;">
+                    <input type="text" id="input-comment" placeholder="Escreva um comentário...">
+                    <button class="btn" style="width:100px; padding:8px;" onclick="addComentario()">Postar</button>
                 </div>
             </div>
         </div>
     </div>
-
-    <div id="news-modal">
-        <div class="modal-content">
-            <button class="btn" style="width:auto; margin-bottom:20px;" onclick="fecharModal()">← VOLTAR</button>
-            <div id="modal-data"></div>
-            
-            <div style="margin: 20px 0; padding: 15px 0; border-top: 1px solid #eee;">
-                <button class="btn btn-outline" onclick="social('Ameis')">❤️ Amei</button>
-                <button class="btn btn-outline" onclick="social('Republicados')">🔄 Republicar</button>
-                <button class="btn btn-outline" onclick="social('Seguidores')">👤 Seguir Autor</button>
-            </div>
-
-            <h4>💬 Comentários</h4>
-            <div id="comments-box"></div>
-            <div style="margin-top:20px; display:flex; gap:10px;">
-                <input type="text" id="comm-input" placeholder="Escreva seu comentário...">
-                <button class="btn" style="width:120px;" onclick="enviarComentario()">Enviar</button>
-            </div>
-        </div>
-    </div>
-
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
     <script>
-        const firebaseConfig = { databaseURL: "https://g1-brookasil-default-rtdb.firebaseio.com/" };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
+        // BANCO DE DADOS LOCAL
+        let noticias = JSON.parse(localStorage.getItem('g1_noticias')) || [];
+        let usuarios = JSON.parse(localStorage.getItem('g1_usuarios')) || [];
+        let currentUser = JSON.parse(localStorage.getItem('g1_sessao')) || null;
+        let climaInfo = JSON.parse(localStorage.getItem('g1_clima')) || { txt: "🌤️ ENSOLARADO", temp: 26 };
 
-        let imagemBase64 = "";
-
-        // FUNÇÃO PARA ACESSAR GALERIA
-        function previewImage(input, targetID) {
-            const file = input.files[0];
-            const reader = new FileReader();
-            reader.onloadend = function() {
-                imagemBase64 = reader.result;
-                document.getElementById(targetID).src = reader.result;
-                document.getElementById(targetID).style.display = 'block';
-            }
-            if (file) reader.readAsDataURL(file);
+        // --- SISTEMA DE NAVEGAÇÃO ---
+        function toggleMenu() {
+            document.getElementById('side-menu').classList.toggle('active');
+            const overlay = document.getElementById('menu-overlay');
+            overlay.style.display = overlay.style.display === 'block' ? 'none' : 'block';
         }
 
-        // NAVEGAÇÃO E FILTROS
-        function irPara(id) {
+        function showSection(id) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.getElementById('sec-' + id).classList.add('active');
+            if (id === 'home') renderHome();
+            if (id === 'admin') renderAdminList();
+            toggleMenu();
             window.scrollTo(0,0);
         }
 
-        function filtrar(tema) {
-            document.querySelectorAll('.sub-nav a').forEach(a => a.classList.remove('active'));
-            event.target.classList.add('active');
-            carregarNoticias(tema);
-            irPara('noticias');
-        }
-
-        // PERFIL
-        function salvarPerfil() {
+        // --- CONTAS DE USUÁRIO ---
+        function criarConta() {
             const nome = document.getElementById('reg-nome').value;
+            const pass = document.getElementById('reg-pass').value;
             const bio = document.getElementById('reg-bio').value;
-            if(nome) {
-                const user = { nome, bio, foto: imagemBase64 };
-                localStorage.setItem('g1_user', JSON.stringify(user));
-                showToast("Perfil atualizado!");
-                location.reload();
+            const fotoFile = document.getElementById('reg-foto').files[0];
+
+            if(!nome || !pass) return alert("Preencha nome e senha!");
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const newUser = { nome, pass, bio, foto: e.target.result };
+                usuarios.push(newUser);
+                localStorage.setItem('g1_usuarios', JSON.stringify(usuarios));
+                currentUser = newUser;
+                localStorage.setItem('g1_sessao', JSON.stringify(newUser));
+                updateUserPill();
+                showSection('home');
+                alert("Conta criada com sucesso!");
+            };
+            if(fotoFile) reader.readAsDataURL(fotoFile);
+            else reader.onload({target: {result: 'https://via.placeholder.com/30'}});
+        }
+
+        function updateUserPill() {
+            if(currentUser) {
+                document.getElementById('user-pill-name').innerText = currentUser.nome;
+                document.getElementById('user-pill-img').src = currentUser.foto;
+                document.getElementById('login-box').style.display = 'none';
+                document.getElementById('profile-box').style.display = 'block';
+                document.getElementById('prof-nome').innerText = currentUser.nome;
+                document.getElementById('prof-bio').innerText = currentUser.bio;
+            } else {
+                document.getElementById('user-pill-name').innerText = "Criar Conta";
+                document.getElementById('user-pill-img').src = "https://via.placeholder.com/30";
+                document.getElementById('login-box').style.display = 'block';
+                document.getElementById('profile-box').style.display = 'none';
             }
         }
 
-        function carregarUser() {
-            const saved = localStorage.getItem('g1_user');
-            if(saved) {
-                const user = JSON.parse(saved);
-                document.getElementById('display-nome').innerText = user.nome;
-                if(user.foto) {
-                    document.getElementById('nav-avatar').src = user.foto;
-                    document.getElementById('edit-preview').src = user.foto;
-                }
-                document.getElementById('reg-nome').value = user.nome;
-                document.getElementById('reg-bio').value = user.bio;
+        function logout() {
+            localStorage.removeItem('g1_sessao');
+            currentUser = null;
+            updateUserPill();
+            location.reload();
+        }
+
+        // --- PAINEL ADMIN ---
+        function logarAdmin() {
+            const pass = document.getElementById('admin-pass').value;
+            if(pass === "Brookasil1234") {
+                document.getElementById('admin-auth').style.display = 'none';
+                document.getElementById('panel-dono').style.display = 'block';
+                document.getElementById('panel-jornalista').style.display = 'block';
+            } else if(pass === "G1_Brookasil") {
+                document.getElementById('admin-auth').style.display = 'none';
+                document.getElementById('panel-jornalista').style.display = 'block';
+            } else {
+                alert("Senha inválida!");
             }
         }
 
-        // ADMINISTRAÇÃO
-        function acessarAdmin() {
-            const p = document.getElementById('admin-pass').value;
-            if(p === "Brookasil1234") { // DONO
-                document.getElementById('admin-login').style.display = 'none';
-                document.getElementById('admin-tools').style.display = 'block';
-                document.getElementById('dono-tools').style.display = 'block';
-            } else if (p === "G1_Brookasil") { // JORNALISTA
-                document.getElementById('admin-login').style.display = 'none';
-                document.getElementById('admin-tools').style.display = 'block';
-            } else { alert("Senha incorreta!"); }
+        function atualizarClima() {
+            const txt = document.getElementById('set-clima').value;
+            const temp = document.getElementById('set-temp').value;
+            climaInfo = { txt: txt.toUpperCase(), temp: temp };
+            localStorage.setItem('g1_clima', JSON.stringify(climaInfo));
+            applyClima();
+            alert("Clima atualizado!");
         }
 
-        // POSTAR NOTÍCIA
+        function applyClima() {
+            document.getElementById('txt-clima').innerText = `${climaInfo.txt}: ${climaInfo.temp}°C`;
+        }
+
+        // --- NOTÍCIAS ---
         function postarNoticia() {
-            const t = document.getElementById('n-tit').value;
-            const txt = document.getElementById('n-txt').value;
+            const tit = document.getElementById('n-titulo').value;
+            const sub = document.getElementById('n-sub').value;
+            const aut = document.getElementById('n-autor').value;
             const tema = document.getElementById('n-tema').value;
-            if(t && txt) {
-                db.ref('posts').push({
-                    titulo: t, texto: txt, imagem: imagemBase64, tema: tema, data: Date.now()
-                }).then(() => {
-                    showToast("Notícia publicada!");
-                    location.reload();
-                });
+            const texto = document.getElementById('n-texto').value;
+            const fotoFile = document.getElementById('n-foto').files[0];
+
+            if(!tit || !texto || !fotoFile) return alert("Preencha título, texto e imagem!");
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const novaNoticia = {
+                    id: Date.now(),
+                    titulo: tit,
+                    subtitulo: sub,
+                    autor: aut,
+                    tema: tema,
+                    texto: texto,
+                    imagem: e.target.result,
+                    likes: 0,
+                    comentarios: [],
+                    data: new Date().toLocaleString()
+                };
+                noticias.unshift(novaNoticia); // Adiciona no topo
+                localStorage.setItem('g1_noticias', JSON.stringify(noticias));
+                alert("Notícia publicada!");
+                showSection('home');
+                // Limpar campos
+                document.querySelectorAll('#post-form input, #post-form textarea').forEach(i => i.value = "");
+            };
+            reader.readAsDataURL(fotoFile);
+        }
+
+        function renderHome() {
+            const feed = document.getElementById('news-feed');
+            feed.innerHTML = "";
+            if(noticias.length === 0) {
+                feed.innerHTML = "<p>Nenhuma notícia publicada ainda.</p>";
+                return;
             }
-        }
-
-        // CARREGAR NOTÍCIAS
-        function carregarNoticias(filtro = "Tudo") {
-            db.ref('posts').on('value', s => {
-                const feed = document.getElementById('feed');
-                feed.innerHTML = "";
-                s.forEach(item => {
-                    const p = item.val();
-                    if(filtro === "Tudo" || p.tema === filtro) {
-                        feed.innerHTML += `
-                            <div class="card" onclick="abrirNoticia('${item.key}')">
-                                ${p.imagem ? `<img src="${p.imagem}" class="card-img">` : ''}
-                                <div class="card-body">
-                                    <span class="card-category">${p.tema}</span>
-                                    <h2 class="card-title">${p.titulo}</h2>
-                                </div>
-                            </div>`;
-                    }
-                });
-            });
-        }
-
-        let noticiaAtiva = "";
-        function abrirNoticia(id) {
-            noticiaAtiva = id;
-            db.ref('posts/'+id).once('value', s => {
-                const p = s.val();
-                document.getElementById('modal-data').innerHTML = `
-                    <span class="card-category">${p.tema}</span>
-                    <h1 style="font-size:38px; line-height:1.1; margin:10px 0;">${p.titulo}</h1>
-                    ${p.imagem ? `<img src="${p.imagem}" style="width:100%; border-radius:8px; margin:20px 0;">` : ''}
-                    <p style="font-size:19px; color:#333; line-height:1.8;">${p.texto.replace(/\n/g, '<br>')}</p>
+            noticias.forEach(n => {
+                feed.innerHTML += `
+                    <div class="card" onclick="abrirNoticia(${n.id})">
+                        <img src="${n.imagem}">
+                        <div class="card-content">
+                            <span class="card-category">${n.tema}</span>
+                            <h2 class="card-title">${n.titulo}</h2>
+                            <span class="card-time">${n.data}</span>
+                        </div>
+                    </div>
                 `;
-                document.getElementById('news-modal').style.display = 'block';
-                document.body.style.overflow = 'hidden';
-                carregarComentarios(id);
             });
         }
 
-        // COMENTÁRIOS E SOCIAL
-        function social(tipo) {
-            showToast("Você ganhou +1 " + tipo);
+        let idAtivo = null;
+        function abrirNoticia(id) {
+            const n = noticias.find(item => item.id === id);
+            idAtivo = id;
+            document.getElementById('full-news-content').innerHTML = `
+                <span class="card-category">${n.tema}</span>
+                <h1>${n.titulo}</h1>
+                <p class="subtitle">${n.subtitulo}</p>
+                <small>Por ${n.autor} — ${n.data}</small>
+                <img src="${n.imagem}" style="margin-top:20px;">
+                <div style="font-size:18px; line-height:1.6; color:#333;">${n.texto.replace(/\n/g, '<br>')}</div>
+            `;
+            document.getElementById('count-like').innerText = n.likes || 0;
+            renderComments();
+            document.getElementById('modal-noticia').style.display = 'block';
+            document.body.style.overflow = 'hidden';
         }
 
-        function enviarComentario() {
-            const user = JSON.parse(localStorage.getItem('g1_user') || '{"nome":"Anônimo"}');
-            const msg = document.getElementById('comm-input').value;
-            if(msg) {
-                db.ref('comentarios/'+noticiaAtiva).push({ 
-                    nome: user.nome, 
-                    msg: msg,
-                    foto: user.foto || "" 
-                }).then(() => {
-                    document.getElementById('comm-input').value = "";
-                });
-            }
-        }
-
-        function carregarComentarios(id) {
-            db.ref('comentarios/'+id).on('value', s => {
-                const box = document.getElementById('comments-box'); box.innerHTML = "";
-                s.forEach(c => {
-                    const d = c.val();
-                    box.innerHTML += `
-                        <div style="display:flex; gap:10px; margin-bottom:15px; align-items:center;">
-                            <img src="${d.foto || 'https://via.placeholder.com/50'}" style="width:30px; height:30px; border-radius:50%; object-fit:cover;">
-                            <p style="font-size:14px; margin:0;"><b>${d.nome}:</b> ${d.msg}</p>
-                        </div>`;
-                });
-            });
-        }
-
-        function fecharModal() { 
-            document.getElementById('news-modal').style.display = 'none'; 
+        function fecharNoticia() {
+            document.getElementById('modal-noticia').style.display = 'none';
             document.body.style.overflow = 'auto';
         }
 
-        function showToast(m) { 
-            const t = document.getElementById('toast'); t.innerText = m; t.style.display = 'block';
-            setTimeout(() => t.style.display = 'none', 3000);
+        function interagir(tipo) {
+            const n = noticias.find(item => item.id === idAtivo);
+            if(tipo === 'like') {
+                n.likes = (n.likes || 0) + 1;
+                document.getElementById('count-like').innerText = n.likes;
+            } else {
+                alert("Ação realizada com sucesso!");
+            }
+            localStorage.setItem('g1_noticias', JSON.stringify(noticias));
         }
 
-        function setClima() {
-            const c = document.getElementById('clima-input').value;
-            db.ref('clima').set(c).then(() => showToast("Clima atualizado!"));
+        function addComentario() {
+            if(!currentUser) return alert("Você precisa de uma conta para comentar!");
+            const txt = document.getElementById('input-comment').value;
+            if(!txt) return;
+
+            const n = noticias.find(item => item.id === idAtivo);
+            n.comentarios.push({ user: currentUser.nome, texto: txt });
+            localStorage.setItem('g1_noticias', JSON.stringify(noticias));
+            document.getElementById('input-comment').value = "";
+            renderComments();
         }
 
-        // INICIALIZAÇÃO
-        carregarUser();
-        carregarNoticias();
+        function renderComments() {
+            const n = noticias.find(item => item.id === idAtivo);
+            const list = document.getElementById('list-comments');
+            list.innerHTML = "";
+            n.comentarios.forEach(c => {
+                list.innerHTML += `<div class="comment"><b>${c.user}:</b> ${c.texto}</div>`;
+            });
+        }
+
+        function renderAdminList() {
+            const list = document.getElementById('admin-news-list');
+            list.innerHTML = "<h4>Gerenciar Notícias (Excluir)</h4>";
+            noticias.forEach(n => {
+                list.innerHTML += `
+                    <div style="display:flex; justify-content:space-between; align-items:center; background:#eee; padding:10px; margin-top:5px;">
+                        <span>${n.titulo}</span>
+                        <button class="btn" style="width:80px; background:black; font-size:10px;" onclick="apagarNoticia(${n.id})">APAGAR</button>
+                    </div>
+                `;
+            });
+        }
+
+        function apagarNoticia(id) {
+            if(confirm("Deseja apagar esta notícia permanentemente?")) {
+                noticias = noticias.filter(n => n.id !== id);
+                localStorage.setItem('g1_noticias', JSON.stringify(noticias));
+                renderAdminList();
+                renderHome();
+            }
+        }
+
+        // --- RELÓGIO ---
+        function updateClock() {
+            const agora = new Date();
+            const h = String(agora.getHours()).padStart(2, '0');
+            const m = String(agora.getMinutes()).padStart(2, '0');
+            const s = String(agora.getSeconds()).padStart(2, '0');
+            document.getElementById('txt-hora').innerText = `${h}:${m}:${s}`;
+        }
+
+        // INICIALIZAÇÃO AO CARREGAR
+        setInterval(updateClock, 1000);
+        updateUserPill();
+        applyClima();
+        renderHome();
+
     </script>
 </body>
 </html>
